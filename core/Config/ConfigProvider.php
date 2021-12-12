@@ -2,20 +2,28 @@
 
 namespace Archi\Config;
 
+use Archi\Log\LogHandler;
+
 class ConfigProvider
 {
-    private $logListeners = [];
+    /** @var LogHandler[] */
+    private $handlers = [];
 
     public function hasLoggerConfig(): bool
     {
-        return !empty($this->logListeners);
+        return !empty($this->handlers);
     }
 
     /**
-     * @return array
+     * @return LogHandler[]
      */
-    public function getLogListeners(): array
+    public function getLogHandlers(): array
     {
-        return $this->logListeners;
+        return $this->handlers;
+    }
+
+    public function registerLogHandler(LogHandler $handler)
+    {
+        $this->handlers[] = $handler;
     }
 }

@@ -4,7 +4,7 @@ namespace Archi\Log;
 
 use Archi\Log\Exception\InvalidStream;
 
-class LogListener
+class LogHandler
 {
     private $stream;
 
@@ -30,6 +30,27 @@ class LogListener
         }
 
         $this->stream = self::canonicalizePath($stream);
+    }
+
+    /**
+     * @param string $path
+     * @param int $level
+     * @return LogHandler
+     * @throws InvalidStream
+     */
+    public static function buildFileHandler(string $path, int $level): LogHandler
+    {
+        return new static($path, $level);
+    }
+
+    /**
+     * @param int $level
+     * @return LogHandler
+     * @throws InvalidStream
+     */
+    public static function buildStdOutHandler(int $level): LogHandler
+    {
+        return new static('php://stderr', $level);
     }
 
     /**

@@ -107,17 +107,18 @@ class Logger implements LoggerInterface
 
     private function dispatch($level, $message, array $context = [])
     {
-        try {
-            /** @var ConfigProvider $config */
-            $config = ArchiContainer::getInstance()->get('Config');
-        } catch (ContainerException | NotFoundException $e) {
-            // no logger configuration available
-            $this->fallback($level, $message, $context);
-            return;
-        }
+        /** @var ConfigProvider $config */
+        $config = ArchiContainer::getInstance()->get('Config');
+
         if (!$config->hasLoggerConfig()) {
             $this->fallback($level, $message, $context);
             return;
+        }
+
+        $listeners = $config->getLogHandlers();
+
+        foreach ($listeners as $l) {
+            $l->log($level, $message, $context);
         }
     }
 
