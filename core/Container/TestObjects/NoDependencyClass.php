@@ -2,7 +2,7 @@
 
 namespace Archi\Container\TestObjects;
 
-class TestClass1
+class NoDependencyClass
 {
 
 }
