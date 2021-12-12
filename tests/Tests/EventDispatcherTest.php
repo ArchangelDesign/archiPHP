@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use Archi\Container\ArchiContainer;
+use Archi\Dispatcher\ArchiDispatcher;
 use Archi\Dispatcher\ListenerProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -9,7 +11,7 @@ class EventDispatcherTest extends TestCase
 {
     public function testRegistrationAndDispatching()
     {
-        $provider = new ListenerProvider();
-        $this->assertInstanceOf(ListenerProvider::class, $provider);
+        $dispatcher = ArchiContainer::getInstance()->get('Dispatcher');
+        $this->assertInstanceOf(ArchiDispatcher::class, $dispatcher);
     }
 }

@@ -22,6 +22,7 @@ class ArchiContainer implements ContainerInterface
     private function __construct()
     {
         $this->register(new Binding('Config', 'Archi\Config\ConfigProvider', true));
+        $this->register(new Binding('Dispatcher', 'Archi\Dispatcher\ArchiDispatcher', true));
     }
 
     private function __clone()
@@ -149,7 +150,7 @@ class ArchiContainer implements ContainerInterface
                     . $binding->getClassPath() . '.'
                 );
             }
-            $constructorParams[] = $this->autowire($param->getType()->getName());
+            $constructorParams[] = $this->get($param->getType()->getName());
         }
 
         return $reflection->newInstanceArgs($constructorParams);
