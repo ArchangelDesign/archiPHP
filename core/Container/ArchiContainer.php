@@ -8,47 +8,68 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class ArchiContainer implements ContainerInterface
 {
+    private static $instance;
+
     private $instances = [];
 
     /**
-     *
-     *
      * @var Binding[]
      */
     private $bindings = [];
 
+    private $factories = [];
+
+    private function __construct()
+    {
+    }
+
+    private function __clone()
+    {
+    }
+
+    private function __wakeup()
+    {
+    }
+
+    public static function getInstance(): ArchiContainer
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new static();
+        }
+
+        return self::$instance;
+    }
+
     public function get(string $id)
     {
+        if ($this->hasFactory($id)) {
+            return $this->factories[$id]($this);
+        }
+
         if (!$this->has($id) && !$this->isWireable($id)) {
             throw new NotFoundException("Container cannot find instance for {$id}");
         }
 
         if (!$this->has($id)) {
-            return $this->autowireAndRegister($id);
+            return $this->registerAndAutowire($id, false);
         }
+
         return $this->autowire($id);
     }
 
     public function has(string $id): bool
     {
-        if (class_exists($id)) {
-            return true;
-        }
-
-        if (isset($this->instances[$id])) {
-            return true;
-        }
-
-        if (isset($this->bindings[$id])) {
-            return true;
-        }
-
-        return false;
+        return $this->hasBinding($id) || $this->hasFactory($id);
     }
 
-    private function isWireable(string $id)
+    public function isWireable(string $id): bool
     {
-        return $this->has($id) || class_exists($id);
+        try {
+            $i = new \ReflectionClass($id);
+            return $i->isInstantiable();
+        } catch (\ReflectionException $e) {
+            return false;
+        }
     }
 
     private function autowire(string $id)
@@ -77,7 +98,6 @@ class ArchiContainer implements ContainerInterface
 
     private function wire(Binding $binding)
     {
-        // @TODO: before and after triggers
         $c = $binding->getClassPath();
         try {
             $reflection = new \ReflectionClass($c);
@@ -89,11 +109,13 @@ class ArchiContainer implements ContainerInterface
             throw new ContainerException('Class ' . $binding->getClassPath() . ' cannot be instantiated');
         }
 
-        if ($reflection->getConstructor()->getNumberOfParameters() == 0) {
+        if (is_null($reflection->getConstructor())) {
             return new $c();
         }
 
-        // @TODO: resolve dependencies for constructor argument
+        if ($reflection->getConstructor()->getNumberOfParameters() == 0) {
+            return new $c();
+        }
 
         $constructor = $reflection->getConstructor();
         $parameters = $constructor->getParameters();
@@ -110,7 +132,27 @@ class ArchiContainer implements ContainerInterface
                 // @TODO: merge arrays
                 throw new ContainerException('Variadic parameters are not supported.');
             }
-            $constructorParams[] = $this->autowire($param->getClass());
+
+            if ($param->getType() == null || $param->getType()->isBuiltin()) {
+                if ($param->isDefaultValueAvailable()) {
+                    $constructorParams[] = $param->getDefaultValue();
+                    continue;
+                }
+                throw new ContainerException(
+                    'Cannot wire parameter '
+                    . $param->getName() . ' for class '
+                    . $binding->getClassPath() . '. Builtin types must have default value to be autowired.'
+                );
+            }
+
+            if (!$param->getType() instanceof \ReflectionNamedType) {
+                throw new ContainerException(
+                    'Cannot wire parameter '
+                    . $param->getName() . ' for class '
+                    . $binding->getClassPath() . '.'
+                );
+            }
+            $constructorParams[] = $this->autowire($this->getParameterClassName($param));
         }
 
         return $reflection->newInstanceArgs($constructorParams);
@@ -123,7 +165,7 @@ class ArchiContainer implements ContainerInterface
      * @param string $class
      * @param bool   $isSingleton
      */
-    private function autowireAndRegister(string $class, bool $isSingleton)
+    private function registerAndAutowire(string $class, bool $isSingleton)
     {
         $b = new Binding($class, $class, $isSingleton);
         $this->register($b);
@@ -134,5 +176,48 @@ class ArchiContainer implements ContainerInterface
     public function register(Binding $binding)
     {
         $this->bindings[$binding->getId()] = $binding;
+    }
+
+    public function registerFactory(string $id, callable $callable)
+    {
+        $this->factories[$id] = $callable;
+    }
+
+    public static function reset()
+    {
+        // @TODO: throw if not in testing
+        self::$instance = new static();
+    }
+
+    public function getParameterClassName(\ReflectionParameter $parameter)
+    {
+        $type = $parameter->getType();
+        $typeName = $type->getName();
+        if (is_null($parameter->getDeclaringClass())) {
+            return $typeName;
+        }
+
+        $class = $parameter->getDeclaringClass();
+        if ($typeName === 'self') {
+            return $class->getName();
+        }
+
+        if ($typeName === 'parent' && $parent = $class->getParentClass()) {
+            return $parent->getName();
+        }
+    }
+
+    private function hasFactory(string $id)
+    {
+        return isset($this->factories[$id]);
+    }
+
+    /**
+     * @param string $id
+     * @return bool
+     */
+    private function hasBinding(string $id): bool
+    {
+        return isset($this->bindings[$id]);
     }
 }

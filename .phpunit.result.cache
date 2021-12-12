@@ -1,1 +1,1 @@
-{"version":1,"defects":[],"times":{"Tests\\ArchiRequestTest::testRequestIsCreated":0.016}}
+{"version":1,"defects":{"Tests\\ContainerTest::testAutowire":4,"Tests\\ContainerTest::testWiringSingleton":4},"times":{"Tests\\ArchiRequestTest::testRequestIsCreated":0.01,"Tests\\EventDispatcherTest::testRegistrationAndWiring":0.001,"Tests\\ContainerTest::testAutowire":0.003,"Tests\\EventDispatcherTest::testRegistrationAndDispatching":0.001,"Tests\\ContainerTest::testWiringSingleton":0.001}}
