@@ -11,9 +11,9 @@ class ArchiContainer implements ContainerInterface
     private $instances = [];
 
     /**
-     * 
      *
-     * @var Binding[] 
+     *
+     * @var Binding[]
      */
     private $bindings = [];
 
@@ -100,7 +100,11 @@ class ArchiContainer implements ContainerInterface
         $constructorParams = [];
         foreach ($parameters as $param) {
             if (!$param->hasType() && !$param->isOptional()) {
-                throw new ContainerException('Cannot wire parameter ' . $param->getName() . ' for class ' . $binding->getClassPath() . '. It has no type and is not optional.');
+                throw new ContainerException(
+                    'Cannot wire parameter '
+                    . $param->getName() . ' for class '
+                    . $binding->getClassPath() . '. It has no type and is not optional.'
+                );
             }
             if ($param->isVariadic()) {
                 // @TODO: merge arrays

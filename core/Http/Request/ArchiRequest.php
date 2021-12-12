@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Archi\Http\Request;
-
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -17,9 +15,9 @@ class ArchiRequest implements RequestInterface
     private $requestTarget;
     private $method;
     /**
-     * 
      *
-     * @var UriInterface 
+     *
+     * @var UriInterface
      */
     private $uri;
 

@@ -22,6 +22,6 @@ jobs:
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: PHPCS check
         run: |
-          ./vendor/bin/phpcbf core
+          ./vendor/bin/phpcs --standard=PSR12 core
       - name: Execute tests
         run: vendor/bin/phpunit

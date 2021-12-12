@@ -24,7 +24,7 @@ class ArchiRequestMethod
     representation rather than transfer the files directly.  Regardless,
     only the origin server needs to know how each of its resource
      */
-    const GET = 'GET';
+    public const GET = 'GET';
 
     /**
     The HEAD method is identical to GET except that the server MUST NOT
@@ -47,7 +47,7 @@ class ArchiRequestMethod
     response might also have an effect on previously cached responses to
     GET; see Section 4.3.5 of [RFC7234].
      */
-    const HEAD = 'HEAD';
+    public const HEAD = 'HEAD';
 
     /**
     The POST method requests that the target resource process the
@@ -98,7 +98,7 @@ class ArchiRequestMethod
     shared caching, though at the cost of an extra request if the user
     agent does not already have the representation cached.
      */
-    const POST = 'POST';
+    public const POST = 'POST';
 
     /**
     The PUT method requests that the state of the target resource be
@@ -222,7 +222,7 @@ class ArchiRequestMethod
     for the effective request URI, those stored responses will be
     invalidated (see Section 4.4 of [RFC7234]).
      */
-    const PUT = 'PUT';
+    public const PUT = 'PUT';
 
     /**
     The DELETE method requests that the origin server remove the
@@ -271,7 +271,7 @@ class ArchiRequestMethod
     for the effective request URI, those stored responses will be
     invalidated (see Section 4.4 of [RFC7234]).
      */
-    const DELETE = 'DELETE';
+    public const DELETE = 'DELETE';
 
     /**
     The CONNECT method requests that the recipient establish a tunnel to
@@ -339,7 +339,7 @@ class ArchiRequestMethod
 
     Responses to the CONNECT method are not cacheable.
      */
-    const CONNECT = 'CONNECT';
+    public const CONNECT = 'CONNECT';
 
     /**
     The OPTIONS method requests information about the communication
@@ -386,7 +386,7 @@ class ArchiRequestMethod
 
     Responses to the OPTIONS method are not cacheable.
      */
-    const OPTIONS = 'OPTIONS';
+    public const OPTIONS = 'OPTIONS';
 
     /**
     The TRACE method requests a remote, application-level loop-back of
@@ -417,7 +417,7 @@ class ArchiRequestMethod
 
     Responses to the TRACE method are not cacheable.
      */
-    const TRACE = 'TRACE';
+    public const TRACE = 'TRACE';
 
     public $cacheableMethods = [
         self::POST,
