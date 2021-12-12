@@ -152,7 +152,7 @@ class ArchiContainer implements ContainerInterface
                     . $binding->getClassPath() . '.'
                 );
             }
-            $constructorParams[] = $this->autowire($this->getParameterClassName($param));
+            $constructorParams[] = $this->autowire($param->getType()->getName());
         }
 
         return $reflection->newInstanceArgs($constructorParams);
@@ -187,24 +187,6 @@ class ArchiContainer implements ContainerInterface
     {
         // @TODO: throw if not in testing
         self::$instance = new static();
-    }
-
-    public function getParameterClassName(\ReflectionParameter $parameter)
-    {
-        $type = $parameter->getType();
-        $typeName = $type->getName();
-        if (is_null($parameter->getDeclaringClass())) {
-            return $typeName;
-        }
-
-        $class = $parameter->getDeclaringClass();
-        if ($typeName === 'self') {
-            return $class->getName();
-        }
-
-        if ($typeName === 'parent' && $parent = $class->getParentClass()) {
-            return $parent->getName();
-        }
     }
 
     private function hasFactory(string $id)
