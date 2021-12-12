@@ -113,9 +113,18 @@ class ArchiContainer implements ContainerInterface
      * Register it for further use and return wired instance
      *
      * @param string $class
+     * @param bool $isSingleton
      */
-    private function autowireAndRegister(string $class)
+    private function autowireAndRegister(string $class, bool $isSingleton)
     {
+        $b = new Binding($class, $class, $isSingleton);
+        $this->register($b);
 
+        return $this->autowire($class);
+    }
+
+    public function register(Binding $binding)
+    {
+        $this->bindings[$binding->getId()] = $binding;
     }
 }
