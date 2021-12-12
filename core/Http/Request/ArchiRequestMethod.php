@@ -385,7 +385,6 @@ class ArchiRequestMethod
     resource.
 
     Responses to the OPTIONS method are not cacheable.
-
      */
     const OPTIONS = 'OPTIONS';
 
@@ -440,8 +439,9 @@ class ArchiRequestMethod
     public function __construct(string $method)
     {
         $m = strtoupper($method);
-        if (!$this->isValidMethod($m))
+        if (!$this->isValidMethod($m)) {
             throw new \RuntimeException('Invalid HTTP method provided: ' . $method);
+        }
         $this->method = $m;
     }
 

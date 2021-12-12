@@ -10,7 +10,11 @@ class ArchiContainer implements ContainerInterface
 {
     private $instances = [];
 
-    /** @var Binding[] */
+    /**
+     * 
+     *
+     * @var Binding[] 
+     */
     private $bindings = [];
 
     public function get(string $id)
@@ -63,7 +67,7 @@ class ArchiContainer implements ContainerInterface
     }
 
     /**
-     * @param string $id
+     * @param  string $id
      * @return bool
      */
     private function hasInstance(string $id): bool
@@ -113,7 +117,7 @@ class ArchiContainer implements ContainerInterface
      * Register it for further use and return wired instance
      *
      * @param string $class
-     * @param bool $isSingleton
+     * @param bool   $isSingleton
      */
     private function autowireAndRegister(string $class, bool $isSingleton)
     {

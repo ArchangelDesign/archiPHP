@@ -12,6 +12,7 @@ class Binding
 
     /**
      * Binding constructor.
+     *
      * @param $isSingleton
      * @param $id
      * @param $classPath

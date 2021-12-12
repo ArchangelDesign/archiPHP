@@ -16,7 +16,11 @@ class ArchiRequest implements RequestInterface
     private $body;
     private $requestTarget;
     private $method;
-    /** @var UriInterface */
+    /**
+     * 
+     *
+     * @var UriInterface 
+     */
     private $uri;
 
     public function __construct(ArchiRequestMethod $method)
@@ -45,7 +49,7 @@ class ArchiRequest implements RequestInterface
     }
 
     /**
-     * @param string $name
+     * @param  string $name
      * @return string[]
      */
     public function getHeader($name)
