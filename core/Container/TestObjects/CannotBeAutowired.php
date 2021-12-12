@@ -9,7 +9,10 @@ namespace Archi\Container\TestObjects;
  */
 class CannotBeAutowired
 {
+    public $s;
+
     public function __construct(string $s)
     {
+        $this->s = $s;
     }
 }

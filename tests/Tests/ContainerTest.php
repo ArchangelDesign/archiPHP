@@ -8,6 +8,7 @@ use Archi\Container\ContainerException;
 use Archi\Container\TestObjects\CannotBeAutowired;
 use Archi\Container\TestObjects\NoDependencyClass;
 use Archi\Container\TestObjects\OneDependencyAndNoTypeArgumentWithDefaultValue;
+use Archi\Container\TestObjects\SimpleProvider;
 use Archi\Container\TestObjects\SingletonTest;
 use PHPUnit\Framework\TestCase;
 
@@ -53,5 +54,14 @@ class ContainerTest extends TestCase
         $i2->inc();
         $this->assertEquals($i->getCounter(), $i2->getCounter());
         $this->assertEquals(4, $i2->getCounter());
+    }
+
+    public function testWireableFactoryCanInstantiate()
+    {
+        ArchiContainer::reset();
+        ArchiContainer::getInstance()->registerFactory(new SimpleProvider());
+        $i = ArchiContainer::getInstance()->get(CannotBeAutowired::class);
+        $this->assertInstanceOf(CannotBeAutowired::class, $i);
+        $this->assertEquals('test', $i->s);
     }
 }
