@@ -419,6 +419,8 @@ class ArchiRequestMethod
      */
     public const TRACE = 'TRACE';
 
+    public const CLI = 'CLI';
+
     public $cacheableMethods = [
         self::POST,
         self::HEAD,
@@ -431,7 +433,7 @@ class ArchiRequestMethod
         self::CONNECT,
         self::DELETE,
         self::PUT,
-
+        self::CLI
     ];
 
     private $method;

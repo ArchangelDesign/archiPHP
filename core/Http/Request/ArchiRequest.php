@@ -14,9 +14,8 @@ class ArchiRequest implements RequestInterface
     private $body;
     private $requestTarget;
     private $method;
+
     /**
-     *
-     *
      * @var UriInterface
      */
     private $uri;
