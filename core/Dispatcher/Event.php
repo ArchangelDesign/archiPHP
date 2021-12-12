@@ -11,10 +11,13 @@ abstract class Event implements StoppableEventInterface
 
     private $name;
 
-    public function __construct(string $name, bool $stopPropagation)
+    private $payload;
+
+    public function __construct(string $name, EventPayload $payload, bool $stopPropagation)
     {
         $this->stopPropagation = $stopPropagation;
         $this->name = $name;
+        $this->payload = $payload;
     }
 
     public function isPropagationStopped(): bool
@@ -35,5 +38,10 @@ abstract class Event implements StoppableEventInterface
     public function stopPropagation(bool $stop = true)
     {
         $this->stopPropagation = $stop;
+    }
+
+    public function getPayload(): EventPayload
+    {
+        return $this->payload;
     }
 }

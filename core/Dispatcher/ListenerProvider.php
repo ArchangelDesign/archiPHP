@@ -41,5 +41,4 @@ class ListenerProvider implements ListenerProviderInterface
             $this->listenerCallbacks[$event->getName()] = [];
         }
     }
-
 }
