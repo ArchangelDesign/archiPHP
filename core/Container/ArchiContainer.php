@@ -21,13 +21,10 @@ class ArchiContainer implements ContainerInterface
 
     private function __construct()
     {
+        $this->register(new Binding('Config', 'Archi\Config\ConfigProvider', true));
     }
 
     private function __clone()
-    {
-    }
-
-    private function __wakeup()
     {
     }
 
