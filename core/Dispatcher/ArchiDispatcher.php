@@ -17,6 +17,11 @@ class ArchiDispatcher implements EventDispatcherInterface
         $this->provider = $provider;
     }
 
+    /**
+     * @param object $event
+     * @return Event
+     * @throws ListenerException
+     */
     public function dispatch(object $event)
     {
         if (!$event instanceof Event) {
@@ -24,6 +29,7 @@ class ArchiDispatcher implements EventDispatcherInterface
         }
 
         $listeners = $this->provider->getListenersForEvent($event);
+        $result = null;
 
         foreach ($listeners as $listener) {
             /** @var Event $result */
@@ -36,10 +42,12 @@ class ArchiDispatcher implements EventDispatcherInterface
                 break;
             }
         }
+
+        return $result;
     }
 
-    public function register(Event $event, Listener $listener)
+    public function register(Listener $listener)
     {
-        $this->provider->register($event, $listener);
+        $this->provider->register($listener);
     }
 }

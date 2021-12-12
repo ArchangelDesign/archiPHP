@@ -15,9 +15,17 @@ class EventPayload
         return new static(json_decode($jsonString));
     }
 
-    public static function buildFromArray(array $payload)
+    public static function buildFromArray(array $payload): EventPayload
     {
         return new static($payload);
+    }
+
+    public static function buildFromExisting(EventPayload $existing, array $extra): EventPayload
+    {
+        $instance = new static([]);
+        $instance->payload = array_merge($existing->getPayload(), $extra);
+
+        return $instance;
     }
 
     private function __construct(array $payload, ?ArchiRequest $request = null)

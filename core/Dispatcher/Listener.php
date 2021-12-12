@@ -2,24 +2,31 @@
 
 namespace Archi\Dispatcher;
 
-abstract class Listener
+abstract class Listener implements ListenerInterface
 {
     private $callable;
-    private string $eventName;
+    /** @var Event */
+    private $event;
 
-    public function __construct(string $eventName, callable $callable)
+    public function __construct(Event $event)
     {
-        $this->callable = $callable;
-        $this->eventName = $eventName;
+        $this->event = $event;
     }
 
     public function getCallable(): callable
     {
-        return $this->callable;
+        return function () {
+            return $this->dispatch($this->event);
+        };
     }
 
     public function getEventName(): string
     {
-        return $this->eventName;
+        return $this->event->getName();
+    }
+
+    public function getEvent(): Event
+    {
+        return $this->event;
     }
 }

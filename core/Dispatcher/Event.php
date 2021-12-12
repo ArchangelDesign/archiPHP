@@ -13,7 +13,9 @@ abstract class Event implements StoppableEventInterface
 
     private $payload;
 
-    public function __construct(string $name, EventPayload $payload, bool $stopPropagation)
+    private $handlersProcessed = 0;
+
+    public function __construct(string $name, ?EventPayload $payload, bool $stopPropagation)
     {
         $this->stopPropagation = $stopPropagation;
         $this->name = $name;
@@ -43,5 +45,11 @@ abstract class Event implements StoppableEventInterface
     public function getPayload(): EventPayload
     {
         return $this->payload;
+    }
+
+    public function setPayload(EventPayload $payload)
+    {
+        $this->payload = $payload;
+        $this->handlersProcessed++;
     }
 }

@@ -22,11 +22,12 @@ class ListenerProvider implements ListenerProviderInterface
         return [];
     }
 
-    public function register(Event $event, Listener $listener)
+    public function register(Listener $listener)
     {
-        $this->prepareForEvent($event);
-        $this->listeners[$event->getName()][] = $listener;
-        $this->listenerCallbacks[$event->getName()][] = $listener->getCallable();
+        $this->prepareForEvent($listener->getEvent());
+        $key = $listener->getEventName();
+        $this->listeners[$key][] = $listener;
+        $this->listenerCallbacks[$key][] = $listener->getCallable();
     }
 
     /**
