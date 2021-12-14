@@ -1,14 +1,12 @@
 <?php
 
-use Archi\Dispatcher\ArchiDispatcher;
+use Archi\Container\ArchiContainer;
 use Archi\Dispatcher\Event\RequestEvent;
-use Archi\Dispatcher\ListenerProvider;
-use Archi\Http\Request\RequestBuilder;
 use Archi\Log\Logger;
 
 require __DIR__ . '/../vendor/autoload.php';
 $logger = new Logger();
 $logger->debug('Staring application');
-$dispatcher = new ArchiDispatcher(new ListenerProvider());
-$request = RequestBuilder::createFromGlobals();
+$dispatcher = ArchiContainer::getInstance()->get('Dispatcher');
+$request = ArchiContainer::getInstance()->get('Request');
 $dispatcher->dispatch(new RequestEvent($request));

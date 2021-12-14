@@ -18,9 +18,9 @@ class EventDispatcherTest extends TestCase
         $dispatcher = ArchiContainer::getInstance()->get('Dispatcher');
         $this->assertInstanceOf(ArchiDispatcher::class, $dispatcher);
         $e = new TestEvent();
-        $this->assertEquals('Archi\Dispatcher\Event\GenericEvent', $e->getName());
+        $this->assertEquals('Archi\Dispatcher\TestObjects\TestEvent', $e->getName());
         $e->setPayload(EventPayload::buildFromArray(['processed' => false]));
-        $dispatcher->register(new TestEventListener($e));
+        $dispatcher->register($e, new TestEventListener());
         $processedEvent = $dispatcher->dispatch($e);
         $this->assertInstanceOf(Event::class, $processedEvent);
         $payload = $processedEvent->getPayload()->getPayload();

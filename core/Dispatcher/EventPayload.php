@@ -30,6 +30,8 @@ class EventPayload
 
     private function __construct(array $payload, ?ArchiRequest $request = null)
     {
+        $this->payload = $payload;
+        $this->request = $request;
     }
 
     public static function buildFromRequest(\Archi\Http\Request\ArchiRequest $request)

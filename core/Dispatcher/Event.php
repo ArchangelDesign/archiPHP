@@ -18,7 +18,7 @@ abstract class Event implements StoppableEventInterface
     public function __construct(string $name, ?EventPayload $payload, bool $stopPropagation)
     {
         $this->stopPropagation = $stopPropagation;
-        $this->name = $name;
+        $this->name = get_called_class();
         $this->payload = $payload;
     }
 
