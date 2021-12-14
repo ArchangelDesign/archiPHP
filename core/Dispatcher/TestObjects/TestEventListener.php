@@ -4,9 +4,9 @@ namespace Archi\Dispatcher\TestObjects;
 
 use Archi\Dispatcher\Event;
 use Archi\Dispatcher\EventPayload;
-use Archi\Dispatcher\Listener;
+use Archi\Dispatcher\ListenerInterface;
 
-class TestEventListener extends Listener
+class TestEventListener implements ListenerInterface
 {
 
     public function dispatch(Event $event): Event

@@ -2,6 +2,8 @@
 
 namespace Archi\Container;
 
+use Archi\Dispatcher\Provider\RequestProvider;
+use Archi\Log\Provider as LoggerProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -23,6 +25,8 @@ class ArchiContainer implements ContainerInterface
     {
         $this->register(new Binding('Config', 'Archi\Config\ConfigProvider', true));
         $this->register(new Binding('Dispatcher', 'Archi\Dispatcher\ArchiDispatcher', true));
+        $this->registerFactory(new LoggerProvider());
+        $this->registerFactory(new RequestProvider());
     }
 
     private function __clone()

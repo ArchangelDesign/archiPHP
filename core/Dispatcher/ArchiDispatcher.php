@@ -2,6 +2,10 @@
 
 namespace Archi\Dispatcher;
 
+use Archi\Container\ArchiContainer;
+use Archi\Dispatcher\Event\RequestEvent;
+use Archi\Dispatcher\Listener\CoreRequestListener;
+use Archi\Dispatcher\Provider\ListenerProvider;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class ArchiDispatcher implements EventDispatcherInterface
@@ -11,10 +15,16 @@ class ArchiDispatcher implements EventDispatcherInterface
     /**
      * ArchiDispatcher constructor.
      * @param ListenerProvider $provider
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
      */
     public function __construct(ListenerProvider $provider)
     {
         $this->provider = $provider;
+        $request = ArchiContainer::getInstance()->get('Request');
+        $event = new RequestEvent($request);
+        $this->provider->register($event, ArchiContainer::getInstance()->get(CoreRequestListener::class));
     }
 
     /**
@@ -46,8 +56,8 @@ class ArchiDispatcher implements EventDispatcherInterface
         return $result;
     }
 
-    public function register(Listener $listener)
+    public function register(Event $event, ListenerInterface $listener)
     {
-        $this->provider->register($listener);
+        $this->provider->register($event, $listener);
     }
 }
