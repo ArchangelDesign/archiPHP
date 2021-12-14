@@ -2,13 +2,14 @@
 
 namespace Archi\Http\Request;
 
+use Archi\Http\ProtocolVersion;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
 class ArchiRequest implements RequestInterface
 {
-
+    /** @var ProtocolVersion */
     private $protocolVersion;
     private $headers;
     private $body;
@@ -20,19 +21,24 @@ class ArchiRequest implements RequestInterface
      */
     private $uri;
 
-    public function __construct(ArchiRequestMethod $method)
+    public function __construct(ArchiRequestMethod $method, ProtocolVersion $protocolVersion)
     {
         $this->method = $method;
+        $this->protocolVersion = $protocolVersion;
     }
 
     public function getProtocolVersion()
     {
-        return $this->protocolVersion;
+        return $this->protocolVersion->get();
     }
 
     public function withProtocolVersion($version)
     {
-        throw new \RuntimeException('implement me');
+        $protocolVersion = $version instanceof ProtocolVersion ? $version : new ProtocolVersion($version);
+        $cloned = clone $this;
+        $cloned->protocolVersion = $protocolVersion;
+
+        return $cloned;
     }
 
     public function getHeaders()

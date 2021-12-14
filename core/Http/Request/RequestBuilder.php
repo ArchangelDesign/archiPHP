@@ -2,6 +2,8 @@
 
 namespace Archi\Http\Request;
 
+use Archi\Http\ProtocolVersion;
+
 class RequestBuilder
 {
     public static function createFromGlobals(): ArchiRequest
@@ -9,9 +11,11 @@ class RequestBuilder
         if (self::isCli()) {
             return new CliRequest();
         }
-        $method = new ArchiRequestMethod(self::getRequestMethod());
 
-        return new ArchiRequest($method);
+        return new ArchiRequest(
+            new ArchiRequestMethod(self::getRequestMethod()),
+            new ProtocolVersion($_SERVER['SERVER_PROTOCOL'])
+        );
     }
 
     public static function getRequestMethod(): string
