@@ -60,6 +60,13 @@ class Logger implements LoggerInterface
      */
     public const EMERGENCY = 600;
 
+    private array $context;
+
+    public function __construct(array $context = [])
+    {
+        $this->context = $context;
+    }
+
     public function emergency($message, array $context = array())
     {
         $this->dispatch(__FUNCTION__, $message, $context);
@@ -111,14 +118,14 @@ class Logger implements LoggerInterface
         $config = ArchiContainer::getInstance()->get('Config');
 
         if (!$config->hasLoggerConfig()) {
-            $this->fallback($level, $message, $context);
+            $this->fallback($level, $message, array_merge($this->context, $context));
             return;
         }
 
         $listeners = $config->getLogHandlers();
 
         foreach ($listeners as $l) {
-            $l->log($level, $message, $context);
+            $l->log($level, $message, array_merge($this->context, $context));
         }
     }
 
