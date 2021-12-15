@@ -8,6 +8,10 @@ class CliRequest extends ArchiRequest
 {
     public function __construct()
     {
-        parent::__construct(new ArchiRequestMethod(ArchiRequestMethod::CLI), new ProtocolVersion('CLI'));
+        parent::__construct(
+            new RequestMethod(RequestMethod::CLI),
+            new ProtocolVersion('CLI'),
+            new Uri('cli:request')
+        );
     }
 }

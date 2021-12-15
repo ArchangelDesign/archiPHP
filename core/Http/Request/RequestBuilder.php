@@ -13,7 +13,7 @@ class RequestBuilder
         }
 
         return new ArchiRequest(
-            new ArchiRequestMethod(self::getRequestMethod()),
+            new RequestMethod(self::getRequestMethod()),
             new ProtocolVersion($_SERVER['SERVER_PROTOCOL'])
         );
     }

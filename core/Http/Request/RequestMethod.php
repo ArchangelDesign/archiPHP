@@ -2,7 +2,7 @@
 
 namespace Archi\Http\Request;
 
-class ArchiRequestMethod
+class RequestMethod
 {
     /**
     The GET method requests transfer of a current selected representation

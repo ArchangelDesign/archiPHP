@@ -21,7 +21,7 @@ class Factory implements RequestFactoryInterface
      */
     public function createRequest(string $method, $uri): RequestInterface
     {
-        $m = new ArchiRequestMethod($method);
+        $m = new RequestMethod($method);
         return new ArchiRequest($m);
     }
 }

@@ -9,22 +9,21 @@ use Psr\Http\Message\UriInterface;
 
 class ArchiRequest implements RequestInterface
 {
-    /** @var ProtocolVersion */
-    private $protocolVersion;
+    private ProtocolVersion $protocolVersion;
     private $headers;
     private $body;
     private $requestTarget;
-    private $method;
+    private RequestMethod $method;
+    private Uri $uri;
 
-    /**
-     * @var UriInterface
-     */
-    private $uri;
-
-    public function __construct(ArchiRequestMethod $method, ProtocolVersion $protocolVersion)
-    {
+    public function __construct(
+        RequestMethod $method,
+        ProtocolVersion $protocolVersion,
+        Uri $uri
+    ) {
         $this->method = $method;
         $this->protocolVersion = $protocolVersion;
+        $this->uri = $uri;
     }
 
     public function getProtocolVersion()
