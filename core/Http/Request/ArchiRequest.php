@@ -19,11 +19,13 @@ class ArchiRequest implements RequestInterface
     public function __construct(
         RequestMethod $method,
         ProtocolVersion $protocolVersion,
-        Uri $uri
+        Uri $uri,
+        array $headers
     ) {
         $this->method = $method;
         $this->protocolVersion = $protocolVersion;
         $this->uri = $uri;
+        $this->headers = $headers;
     }
 
     public function getProtocolVersion()

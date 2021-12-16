@@ -11,7 +11,8 @@ class CliRequest extends ArchiRequest
         parent::__construct(
             new RequestMethod(RequestMethod::CLI),
             new ProtocolVersion('CLI'),
-            new Uri('cli:request')
+            new Uri('cli:request'),
+            []
         );
     }
 }

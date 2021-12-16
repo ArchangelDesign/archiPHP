@@ -14,7 +14,7 @@ class ArchiRequestTest extends TestCase
     public function testRequestIsCreated()
     {
         $m = new RequestMethod('POST');
-        $r = new ArchiRequest($m, new ProtocolVersion('1.1'), new Uri('http://google.com'));
+        $r = new ArchiRequest($m, new ProtocolVersion('1.1'), new Uri('http://google.com'), []);
         $this->assertInstanceOf(ArchiRequest::class, $r);
     }
 
@@ -30,7 +30,8 @@ class ArchiRequestTest extends TestCase
         $request = new ArchiRequest(
             new RequestMethod('GET'),
             new ProtocolVersion('HTTP/1.1'),
-            new Uri('http://google.com')
+            new Uri('http://google.com'),
+            []
         );
         $this->assertEquals('1.1', $request->getProtocolVersion());
         $plainNumber = $request->withProtocolVersion('1.1');
@@ -109,5 +110,17 @@ class ArchiRequestTest extends TestCase
         $this->assertEquals('', $uri->getFragment());
         $uri = new Uri('urn:example:animal:ferret:nose');
         $this->assertEquals('', $uri->getFragment());
+    }
+
+    public function testRequestBuilder()
+    {
+        $r = RequestBuilder::createFromGlobals();
+        $this->assertInstanceOf(ArchiRequest::class, $r);
+    }
+
+    public function testRequestHeaderName()
+    {
+        $name = 'HTTP_USER_AGENT';
+        $this->assertEquals('User-Agent', RequestBuilder::getHeaderName($name));
     }
 }
