@@ -2,6 +2,7 @@
 
 namespace Archi\Http\Request;
 
+use Archi\Arr;
 use Archi\Http\ProtocolVersion;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -58,17 +59,23 @@ class ArchiRequest implements RequestInterface
      */
     public function getHeader($name)
     {
-        return $this->hasHeader($name) ? explode(',', $this->headers[$name]) : [];
+        return $this->hasHeader($name) ? $this->headers[$name] : [];
     }
 
     public function getHeaderLine($name)
     {
-        return $this->hasHeader($name) ? $this->headers[$name] : '';
+        return $this->hasHeader($name) ? implode(', ', $this->headers[$name]) : '';
     }
 
     public function withHeader($name, $value)
     {
-        throw new \RuntimeException('implement me');
+        $cloned = clone $this;
+        if (is_string($value)) {
+            $cloned->headers[$name] = Arr::trim(explode(',', $value));
+            return $cloned;
+        }
+        $cloned->headers[$name] = $value;
+        return $cloned;
     }
 
     public function withAddedHeader($name, $value)

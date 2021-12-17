@@ -112,15 +112,32 @@ class ArchiRequestTest extends TestCase
         $this->assertEquals('', $uri->getFragment());
     }
 
-    public function testRequestBuilder()
+    public function testRequestBuilderWorksForCli()
     {
         $r = RequestBuilder::createFromGlobals();
         $this->assertInstanceOf(ArchiRequest::class, $r);
     }
 
-    public function testRequestHeaderName()
+    public function testRequestHeaderNameConversionFromServerVars()
     {
         $name = 'HTTP_USER_AGENT';
         $this->assertEquals('User-Agent', RequestBuilder::getHeaderName($name));
+    }
+
+    public function testRequestWithHeaders()
+    {
+        $r = RequestBuilder::createFromGlobals();
+        $cloned = $r->withHeader('test-header', 'test-value');
+        $this->assertEquals('test-value', $cloned->getHeaderLine('test-header'));
+        $this->assertCount(1, $cloned->getHeader('test-header'));
+        $cloned = $r->withHeader('test-header', '1,2');
+        $this->assertEquals('1, 2', $cloned->getHeaderLine('test-header'));
+        $this->assertCount(2, $cloned->getHeader('test-header'));
+        $cloned = $r->withHeader('test-header', ['3', '5']);
+        $this->assertEquals('3, 5', $cloned->getHeaderLine('test-header'));
+        $this->assertCount(2, $cloned->getHeader('test-header'));
+        $cloned = $r->withHeader('test-header', '1, 2');
+        $this->assertEquals('1, 2', $cloned->getHeaderLine('test-header'));
+        $this->assertCount(2, $cloned->getHeader('test-header'));
     }
 }
