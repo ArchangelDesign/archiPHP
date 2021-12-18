@@ -140,4 +140,14 @@ class ArchiRequestTest extends TestCase
         $this->assertEquals('1, 2', $cloned->getHeaderLine('test-header'));
         $this->assertCount(2, $cloned->getHeader('test-header'));
     }
+
+    public function testRequestWithAddedHeader()
+    {
+        $r = RequestBuilder::createFromGlobals();
+        $r = $r->withHeader('existing', 'one, two');
+        $this->assertCount(2, $r->getHeader('existing'));
+        $r = $r->withAddedHeader('existing', 'three');
+        $this->assertCount(3, $r->getHeader('existing'));
+        $this->assertEquals('three', $r->getHeader('existing')[2]);
+    }
 }

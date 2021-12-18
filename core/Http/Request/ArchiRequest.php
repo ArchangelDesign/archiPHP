@@ -27,6 +27,7 @@ class ArchiRequest implements RequestInterface
         $this->protocolVersion = $protocolVersion;
         $this->uri = $uri;
         $this->headers = $headers;
+        $this->requestTarget = $uri->getPath();
     }
 
     public function getProtocolVersion()
@@ -71,8 +72,11 @@ class ArchiRequest implements RequestInterface
     {
         $cloned = clone $this;
         if (is_string($value)) {
-            $cloned->headers[$name] = Arr::trim(explode(',', $value));
+            $cloned->headers[$name] = $this->headerLineToArray($value);
             return $cloned;
+        }
+        if (!is_array($value)) {
+            throw new \RuntimeException('header value must be either string or array');
         }
         $cloned->headers[$name] = $value;
         return $cloned;
@@ -80,7 +84,16 @@ class ArchiRequest implements RequestInterface
 
     public function withAddedHeader($name, $value)
     {
-        throw new \RuntimeException('implement me');
+        if (!$this->hasHeader($name)) {
+            return $this->withHeader($name, $value);
+        }
+        $cloned = clone $this;
+        if (is_string($value)) {
+            $value = $this->headerLineToArray($value);
+        }
+        $cloned->headers[$name] = array_merge($cloned->headers[$name], $value);
+
+        return $cloned;
     }
 
     public function withoutHeader($name)
@@ -126,5 +139,14 @@ class ArchiRequest implements RequestInterface
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
         throw new \RuntimeException('implement me');
+    }
+
+    /**
+     * @param string $value
+     * @return string[]
+     */
+    private function headerLineToArray(string $value): array
+    {
+        return Arr::trim(explode(',', $value));
     }
 }
