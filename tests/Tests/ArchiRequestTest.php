@@ -14,7 +14,7 @@ class ArchiRequestTest extends TestCase
     public function testRequestIsCreated()
     {
         $m = new RequestMethod('POST');
-        $r = new ArchiRequest($m, new ProtocolVersion('1.1'), new Uri('http://google.com'), []);
+        $r = new ArchiRequest($m, new ProtocolVersion('1.1'), new Uri('http://google.com'), [], null);
         $this->assertInstanceOf(ArchiRequest::class, $r);
     }
 
@@ -31,7 +31,8 @@ class ArchiRequestTest extends TestCase
             new RequestMethod('GET'),
             new ProtocolVersion('HTTP/1.1'),
             new Uri('http://google.com'),
-            []
+            [],
+            null
         );
         $this->assertEquals('1.1', $request->getProtocolVersion());
         $plainNumber = $request->withProtocolVersion('1.1');

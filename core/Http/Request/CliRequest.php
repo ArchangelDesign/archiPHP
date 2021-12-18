@@ -12,7 +12,8 @@ class CliRequest extends ArchiRequest
             new RequestMethod(RequestMethod::CLI),
             new ProtocolVersion('CLI'),
             new Uri('cli:request'),
-            []
+            [],
+            null
         );
     }
 }

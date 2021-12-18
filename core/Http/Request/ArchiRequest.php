@@ -4,6 +4,7 @@ namespace Archi\Http\Request;
 
 use Archi\Arr;
 use Archi\Http\ProtocolVersion;
+use Archi\Http\Stream;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -21,13 +22,15 @@ class ArchiRequest implements RequestInterface
         RequestMethod $method,
         ProtocolVersion $protocolVersion,
         Uri $uri,
-        array $headers
+        array $headers,
+        ?Stream $body
     ) {
         $this->method = $method;
         $this->protocolVersion = $protocolVersion;
         $this->uri = $uri;
         $this->headers = $headers;
         $this->requestTarget = $uri->getPath();
+        $this->body = $body;
     }
 
     public function getProtocolVersion()
