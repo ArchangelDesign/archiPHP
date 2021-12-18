@@ -2,10 +2,10 @@
 
 namespace Tests;
 
-use Archi\Http\Stream;
+use Archi\Http\RequestStream;
 use PHPUnit\Framework\TestCase;
 
-class StreamTest extends TestCase
+class RequestStreamTest extends TestCase
 {
     public function testStreamContents()
     {
@@ -13,7 +13,7 @@ class StreamTest extends TestCase
         $memory = fopen('php://memory', 'r+');
         fwrite($memory, $content);
         fseek($memory, 0);
-        $s = new Stream($memory);
+        $s = new RequestStream($memory);
         $this->assertEquals($content, $s->getContents(), 'Stream was not loaded properly.');
         fseek($memory, 2);
         $this->assertEquals($content, $s->__toString(), '__toString() did not rewind the stream.');

@@ -4,7 +4,7 @@ namespace Archi\Http;
 
 use Psr\Http\Message\StreamInterface;
 
-class Stream implements StreamInterface
+class RequestStream implements StreamInterface
 {
     private $stream;
     private $meta;
@@ -71,7 +71,7 @@ class Stream implements StreamInterface
 
     public function rewind()
     {
-        $this->seek(0);
+        rewind($this->stream);
     }
 
     public function isWritable()
