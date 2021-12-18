@@ -26,7 +26,12 @@ class Stream implements StreamInterface
 
     public function __toString()
     {
-        return stream_get_contents($this->stream);
+        $index = $this->tell();
+        $this->seek(0);
+        $content = stream_get_contents($this->stream);
+        $this->seek($index);
+
+        return $content;
     }
 
     public function close()
@@ -91,7 +96,7 @@ class Stream implements StreamInterface
 
     public function getContents()
     {
-        return $this->__toString();
+        return stream_get_contents($this->stream);
     }
 
     public function getMetadata($key = null)
