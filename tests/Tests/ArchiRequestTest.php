@@ -150,4 +150,12 @@ class ArchiRequestTest extends TestCase
         $this->assertCount(3, $r->getHeader('existing'));
         $this->assertEquals('three', $r->getHeader('existing')[2]);
     }
+
+    public function testRequestWithoutHeader()
+    {
+        $r = RequestBuilder::createFromGlobals();
+        $r = $r->withHeader('existing', 'one, two');
+        $r = $r->withoutHeader('existing');
+        $this->assertCount(0, $r->getHeaders());
+    }
 }

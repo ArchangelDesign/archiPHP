@@ -98,7 +98,12 @@ class ArchiRequest implements RequestInterface
 
     public function withoutHeader($name)
     {
-        throw new \RuntimeException('implement me');
+        $cloned = clone $this;
+        if ($cloned->hasHeader($name)) {
+            unset($cloned->headers[$name]);
+        }
+
+        return $cloned;
     }
 
     public function getBody()
