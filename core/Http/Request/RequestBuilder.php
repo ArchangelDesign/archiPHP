@@ -3,6 +3,7 @@
 namespace Archi\Http\Request;
 
 use Archi\Http\ProtocolVersion;
+use Archi\Http\RequestStream;
 
 class RequestBuilder
 {
@@ -16,7 +17,8 @@ class RequestBuilder
             new RequestMethod(self::getRequestMethod()),
             new ProtocolVersion($_SERVER['SERVER_PROTOCOL']),
             new Uri(self::getFullUrl()),
-            self::getRequestHeaders()
+            self::getRequestHeaders(),
+            self::getRequestBodyStream()
         );
     }
 
@@ -93,5 +95,14 @@ class RequestBuilder
         });
 
         return $result;
+    }
+
+    private static function getRequestBodyStream()
+    {
+        if (function_exists('http_get_request_body_stream')) {
+            return new RequestStream(http_get_request_body_stream());
+        }
+
+        return new RequestStream(fopen('php://input', 'r'));
     }
 }

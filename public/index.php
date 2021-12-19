@@ -14,4 +14,4 @@ $dispatcher = ArchiContainer::getInstance()->get('Dispatcher');
 $request = ArchiContainer::getInstance()->get('Request');
 $dispatcher->dispatch(new RequestEvent($request));
 
-var_dump(Env::getAll());
+var_dump((string)$request->getBody());
