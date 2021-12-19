@@ -10,7 +10,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "Archi\\": "core/"
+      "Archi\\": "core/",
+      "Archi\\Modules\\Local\\": "modules/"
     }
   },
   "autoload-dev": {
