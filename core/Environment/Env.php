@@ -93,4 +93,21 @@ class Env
     {
         return self::$variables;
     }
+
+    public static function getBool(string $name): bool
+    {
+        if (!self::has($name)) {
+            return false;
+        }
+
+        if (self::get($name) === 'true') {
+            return true;
+        }
+
+        if (self::get($name) === 'false') {
+            return false;
+        }
+
+        return boolval(self::get($name));
+    }
 }
