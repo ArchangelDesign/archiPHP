@@ -110,4 +110,9 @@ class Env
 
         return boolval(self::get($name));
     }
+
+    public static function isInitialized()
+    {
+        return self::$initialized;
+    }
 }

@@ -25,6 +25,7 @@ class ArchiContainer implements ContainerInterface
     {
         $this->register(new Binding('Config', 'Archi\Config\ConfigProvider', true));
         $this->register(new Binding('Dispatcher', 'Archi\Dispatcher\ArchiDispatcher', true));
+        $this->register(new Binding('ModuleManager', 'Archi\Module\ModuleManager', true));
         $this->registerFactory(new LoggerProvider());
         $this->registerFactory(new RequestProvider());
     }
@@ -186,41 +187,7 @@ class ArchiContainer implements ContainerInterface
 
         $constructor = $reflection->getConstructor();
         $parameters = $constructor->getParameters();
-        $constructorParams = [];
-        foreach ($parameters as $param) {
-            if (!$param->hasType() && !$param->isOptional()) {
-                throw new ContainerException(
-                    'Cannot wire parameter '
-                    . $param->getName() . ' for class '
-                    . $binding->getClassPath() . '. It has no type and is not optional.'
-                );
-            }
-            if ($param->isVariadic()) {
-                // @TODO: merge arrays
-                throw new ContainerException('Variadic parameters are not supported.');
-            }
-
-            if ($param->getType() == null || $param->getType()->isBuiltin()) {
-                if ($param->isDefaultValueAvailable()) {
-                    $constructorParams[] = $param->getDefaultValue();
-                    continue;
-                }
-                throw new ContainerException(
-                    'Cannot wire parameter '
-                    . $param->getName() . ' for class '
-                    . $binding->getClassPath() . '. Builtin types must have default value to be autowired.'
-                );
-            }
-
-            if (!$param->getType() instanceof \ReflectionNamedType) {
-                throw new ContainerException(
-                    'Cannot wire parameter '
-                    . $param->getName() . ' for class '
-                    . $binding->getClassPath() . '.'
-                );
-            }
-            $constructorParams[] = $this->get($param->getType()->getName());
-        }
+        $constructorParams = $this->wireMethodArguments($parameters, $binding->getClassPath());
 
         return $reflection->newInstanceArgs($constructorParams);
     }
@@ -232,6 +199,10 @@ class ArchiContainer implements ContainerInterface
      * @param string $class
      * @param bool $isSingleton
      * @return mixed|object
+     * @throws ContainerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws \ReflectionException
      */
     private function registerAndAutowire(string $class, bool $isSingleton)
     {
@@ -276,5 +247,54 @@ class ArchiContainer implements ContainerInterface
     private function hasBinding(string $id): bool
     {
         return isset($this->bindings[$id]);
+    }
+
+    /**
+     * @param array $parameters
+     * @param string $className
+     * @return array
+     * @throws ContainerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws \ReflectionException
+     */
+    private function wireMethodArguments(array $parameters, string $className): array
+    {
+        $constructorParams = [];
+        foreach ($parameters as $param) {
+            if (!$param->hasType() && !$param->isOptional()) {
+                throw new ContainerException(
+                    'Cannot wire parameter '
+                    . $param->getName() . ' for class '
+                    . $className . '. It has no type and is not optional.'
+                );
+            }
+            if ($param->isVariadic()) {
+                // @TODO: merge arrays
+                throw new ContainerException('Variadic parameters are not supported.');
+            }
+
+            if ($param->getType() == null || $param->getType()->isBuiltin()) {
+                if ($param->isDefaultValueAvailable()) {
+                    $constructorParams[] = $param->getDefaultValue();
+                    continue;
+                }
+                throw new ContainerException(
+                    'Cannot wire parameter '
+                    . $param->getName() . ' for class '
+                    . $className . '. Builtin types must have default value to be autowired.'
+                );
+            }
+
+            if (!$param->getType() instanceof \ReflectionNamedType) {
+                throw new ContainerException(
+                    'Cannot wire parameter '
+                    . $param->getName() . ' for class '
+                    . $className . '.'
+                );
+            }
+            $constructorParams[] = $this->get($param->getType()->getName());
+        }
+        return $constructorParams;
     }
 }
