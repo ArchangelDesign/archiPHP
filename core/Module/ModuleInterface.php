@@ -2,7 +2,7 @@
 
 namespace Archi\Module;
 
-interface ArchiModule
+interface ModuleInterface
 {
 
 }

@@ -5,12 +5,12 @@ namespace Archi\Log;
 use Archi\Container\ArchiContainer;
 use Archi\Container\Wireable;
 
-class Provider implements Wireable
+class CoreLoggerProvider implements Wireable
 {
 
     public function getId(): string
     {
-        return 'Logger';
+        return 'CoreLogger';
     }
 
     public function wire(ArchiContainer $container): object

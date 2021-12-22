@@ -12,7 +12,7 @@ class CoreRequestListener implements ListenerInterface
 
     public function dispatch(Event $event): Event
     {
-        $logger = ArchiContainer::getInstance()->get('Logger');
+        $logger = ArchiContainer::getInstance()->get('CoreLogger');
         $logger->debug('Dispatching ' . $event->getPayload()->getRequest()->getMethod() . ' request');
         return $event;
     }

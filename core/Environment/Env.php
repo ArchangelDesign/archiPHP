@@ -80,10 +80,10 @@ class Env
         return array_key_exists($name, self::$variables);
     }
 
-    public static function get(string $name): ?string
+    public static function get(string $name, ?string $default = null): ?string
     {
         if (!self::has($name)) {
-            return null;
+            return $default;
         }
 
         return self::$variables[$name];

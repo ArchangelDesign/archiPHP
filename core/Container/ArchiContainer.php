@@ -3,7 +3,7 @@
 namespace Archi\Container;
 
 use Archi\Dispatcher\Provider\RequestProvider;
-use Archi\Log\Provider as LoggerProvider;
+use Archi\Log\CoreLoggerProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -26,7 +26,7 @@ class ArchiContainer implements ContainerInterface
         $this->register(new Binding('Config', 'Archi\Config\ConfigProvider', true));
         $this->register(new Binding('Dispatcher', 'Archi\Dispatcher\ArchiDispatcher', true));
         $this->register(new Binding('ModuleManager', 'Archi\Module\ModuleManager', true));
-        $this->registerFactory(new LoggerProvider());
+        $this->registerFactory(new CoreLoggerProvider());
         $this->registerFactory(new RequestProvider());
     }
 
@@ -250,7 +250,7 @@ class ArchiContainer implements ContainerInterface
     }
 
     /**
-     * @param array $parameters
+     * @param \ReflectionParameter[] $parameters
      * @param string $className
      * @return array
      * @throws ContainerException
@@ -282,7 +282,7 @@ class ArchiContainer implements ContainerInterface
                 throw new ContainerException(
                     'Cannot wire parameter '
                     . $param->getName() . ' for class '
-                    . $className . '. Builtin types must have default value to be autowired.'
+                    . $className . '. Builtin types must have default value to be wired.'
                 );
             }
 
