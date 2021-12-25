@@ -1,0 +1,9 @@
+{
+  "fileName": "DebugBar.php",
+  "name": "Debug Bar",
+  "description": "Debug Bar for Archi PHP Framework",
+  "minimumCoreVersion": "0",
+  "title": "Debug Bar",
+  "version": "0.1",
+  "author": "Raff Martinez-Marjanski"
+}

@@ -4,6 +4,7 @@ namespace Archi\Environment;
 
 class Env
 {
+    public const DS = '/';
     private static bool $initialized = false;
 
     private static ?string $workingDirectory;
@@ -114,5 +115,10 @@ class Env
     public static function isInitialized()
     {
         return self::$initialized;
+    }
+
+    public static function ds()
+    {
+        return self::DS;
     }
 }
