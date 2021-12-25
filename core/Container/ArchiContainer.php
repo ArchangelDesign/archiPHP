@@ -4,6 +4,7 @@ namespace Archi\Container;
 
 use Archi\Dispatcher\Provider\RequestProvider;
 use Archi\Log\CoreLoggerProvider;
+use Archi\Module\ModuleManagerProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -20,12 +21,13 @@ class ArchiContainer implements ContainerInterface
     private $bindings = [];
 
     private $factories = [];
+    private $singletons = [];
 
     private function __construct()
     {
         $this->register(new Binding('Config', 'Archi\Config\ConfigProvider', true));
         $this->register(new Binding('Dispatcher', 'Archi\Dispatcher\ArchiDispatcher', true));
-        $this->register(new Binding('ModuleManager', 'Archi\Module\ModuleManager', true));
+        $this->registerfactory(new ModuleManagerProvider());
         $this->registerFactory(new CoreLoggerProvider());
         $this->registerFactory(new RequestProvider());
     }
@@ -62,10 +64,16 @@ class ArchiContainer implements ContainerInterface
     public function get(string $id)
     {
         if ($this->hasFactory($id)) {
+            if ($this->isSingleton($id)) {
+                if (!$this->hasInstance($id)) {
+                    $this->instances[$id] = $this->factories[$id]($this);
+                }
+                return $this->instances[$id];
+            }
             return $this->factories[$id]($this);
         }
 
-        if (!$this->has($id) && !$this->isWireable($id)) {
+        if (!$this->has($id)) {
             throw new NotFoundException("Container cannot find instance for {$id}");
         }
 
@@ -215,18 +223,21 @@ class ArchiContainer implements ContainerInterface
     public function register(Binding $binding)
     {
         $this->bindings[$binding->getId()] = $binding;
+        $this->singletons[$binding->getId()] = $binding->isSingleton();
     }
 
     /**
      * Registers Wireable which will provide object instance
      *
      * @param Wireable $wireable
+     * @param bool $isSingleton
      */
-    public function registerFactory(Wireable $wireable)
+    public function registerFactory(Wireable $wireable, bool $isSingleton = true)
     {
         $this->factories[$wireable->getId()] = function () use ($wireable) {
             return $wireable->wire($this);
         };
+        $this->singletons[$wireable->getId()] = $isSingleton;
     }
 
     public static function reset()
@@ -296,5 +307,10 @@ class ArchiContainer implements ContainerInterface
             $constructorParams[] = $this->get($param->getType()->getName());
         }
         return $constructorParams;
+    }
+
+    private function isSingleton(string $id): bool
+    {
+        return $this->singletons[$id] ?? false;
     }
 }

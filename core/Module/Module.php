@@ -3,6 +3,8 @@
 namespace Archi\Module;
 
 use Archi\Environment\Env;
+use Archi\Helper\Nomenclature;
+use Archi\Module\Exception\InvalidLocalModule;
 
 class Module
 {
@@ -62,6 +64,11 @@ class Module
         return $this->name;
     }
 
+    public function getNameInCamelCase(): string
+    {
+        return Nomenclature::smartToCamelCase($this->getName());
+    }
+
     /**
      * @return string|null
      */
@@ -105,5 +112,20 @@ class Module
     public function getLoadFile(): string
     {
         return $this->directory . Env::ds() . $this->fileName;
+    }
+
+    /**
+     * @throws InvalidLocalModule
+     */
+    public function preLoad()
+    {
+        $moduleFile = $this->getLoadFile();
+        $contents = file_get_contents($moduleFile);
+        if (!preg_match('/namespace Archi\\\\Modules\\\\local/', $contents)) {
+            throw new InvalidLocalModule(
+                'Module ' . $this->getName() . ': ' . $moduleFile
+                . ' class must be in namespace Archi\\Modules\\Local'
+            );
+        }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Archi\Modules\Local;
+namespace MyCustom\Name;
 
 use Archi\Module\ModuleInterface;
 
