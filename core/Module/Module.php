@@ -66,7 +66,7 @@ class Module
 
     public function getNameInCamelCase(): string
     {
-        return Nomenclature::smartToCamelCase($this->getName());
+        return Nomenclature::toPascalCase($this->getName());
     }
 
     /**

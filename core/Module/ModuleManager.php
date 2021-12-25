@@ -131,6 +131,6 @@ class ModuleManager
 
     public function hasModule(string $moduleName): bool
     {
-        return isset($this->preLoadedModules[Nomenclature::smartToCamelCase($moduleName)]);
+        return isset($this->preLoadedModules[Nomenclature::toPascalCase($moduleName)]);
     }
 }
