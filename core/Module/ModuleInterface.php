@@ -4,5 +4,5 @@ namespace Archi\Module;
 
 interface ModuleInterface
 {
-
+    public function getClassMap(): ClassMap;
 }

@@ -6,7 +6,7 @@ use Archi\Environment\Env;
 use Archi\Helper\Nomenclature;
 use Archi\Module\Exception\InvalidLocalModule;
 
-class Module
+class ModuleDescriptor
 {
     private string $fileName;
     private string $name;
@@ -66,7 +66,7 @@ class Module
         return $this->name;
     }
 
-    public function getNameInCamelCase(): string
+    public function getNameInPascalCase(): string
     {
         return Nomenclature::toPascalCase($this->getName());
     }
@@ -176,6 +176,11 @@ class Module
         }
 
         return $matches[1];
+    }
+
+    public function getPascalName()
+    {
+        return Nomenclature::toPascalCase($this->getName());
     }
 
 }

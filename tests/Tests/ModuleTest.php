@@ -4,7 +4,8 @@ namespace Tests;
 
 use Archi\Container\ArchiContainer;
 use Archi\Environment\Env;
-use Archi\Module\Module;
+use Archi\Module\ModuleDescriptor;
+use Archi\Module\ModuleInterface;
 use Archi\Module\ModuleManager;
 use PHPUnit\Framework\TestCase;
 
@@ -37,19 +38,22 @@ class ModuleTest extends TestCase
             'version' => '1.0',
         ]));
         $mm = ArchiContainer::getInstance()->get('ModuleManager');
-        $module = $this->callPrivateMethod($mm, 'getModuleFromJson', [$directory, $json]);
-        $this->assertInstanceOf(Module::class, $module);
+        $module = $this->callPrivateMethod($mm, 'getModuleDescriptorFromJson', [$directory, $json]);
+        $this->assertInstanceOf(ModuleDescriptor::class, $module);
     }
 
-    public function testModuleLoads()
+    public function testDebugBarModuleLoads()
     {
         /** @var ModuleManager $mm */
         $mm = ArchiContainer::getInstance()->get('ModuleManager');
         $mm->preloadModules();
         $this->assertTrue($mm->hasModule('DebugBar'));
-        $namespace = $mm->getModule('DebugBar')->getNamespace();
+        $namespace = $mm->getModuleDescriptor('DebugBar')->getNamespace();
         $this->assertEquals('Archi\Debug', $namespace);
-        $class = $mm->getModule('DebugBar')->getClassName();
+        $class = $mm->getModuleDescriptor('DebugBar')->getClassName();
         $this->assertEquals('\Archi\Debug\DebugBar', $class);
+        $instance = $mm->getModuleInstance('DebugBar');
+        $this->assertInstanceOf(ModuleInterface::class, $instance);
+        $this->assertInstanceOf(\Archi\Debug\DebugBar::class, $instance);
     }
 }
