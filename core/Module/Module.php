@@ -129,7 +129,7 @@ class Module
                 . ' does not have a namespace.'
             );
         }
-        $this->namespace = $this->getNamespaceFromContencts($contents);
+        $this->namespace = $this->getNamespaceFromContents($contents);
         $this->className = $this->getClassNameFromContents($contents);
     }
 
@@ -142,7 +142,7 @@ class Module
         return (bool)preg_match('/namespace ([a-zA-Z\\\\]*);/im', $contents);
     }
 
-    private function getNamespaceFromContencts(string $contents): string
+    private function getNamespaceFromContents(string $contents): string
     {
         preg_match('/namespace ([a-zA-Z\\\\]*);/im', $contents, $matches);
         return $matches[1];
