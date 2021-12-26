@@ -38,8 +38,16 @@ class ModuleTest extends TestCase
             'version' => '1.0',
         ]));
         $mm = ArchiContainer::getInstance()->get('ModuleManager');
+        /** @var ModuleDescriptor $module */
         $module = $this->callPrivateMethod($mm, 'getModuleDescriptorFromJson', [$directory, $json]);
         $this->assertInstanceOf(ModuleDescriptor::class, $module);
+        $this->assertEquals('MyModule.php', $module->getFileName());
+        $this->assertEquals('My Module', $module->getName());
+        $this->assertEquals('MyModule', $module->getNameInPascalCase());
+        $this->assertEquals('My Module', $module->getTitle());
+        $this->assertEquals('1.0', $module->getVersion());
+        $this->assertNull($module->getDescription());
+        $this->assertEquals('0', $module->getMinimumCoreVersion());
     }
 
     public function testDebugBarModuleLoads()
