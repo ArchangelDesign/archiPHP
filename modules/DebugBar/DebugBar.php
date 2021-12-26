@@ -1,6 +1,6 @@
 <?php
 
-namespace MyCustom\Name;
+namespace Archi\Debug;
 
 use Archi\Module\ModuleInterface;
 

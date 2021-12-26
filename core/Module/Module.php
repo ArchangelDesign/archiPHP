@@ -16,6 +16,8 @@ class Module
     private string $version;
     private ?string $author;
     private string $directory;
+    private string $namespace;
+    private string $className;
 
     /**
      * Module constructor.
@@ -121,11 +123,59 @@ class Module
     {
         $moduleFile = $this->getLoadFile();
         $contents = file_get_contents($moduleFile);
-        if (!preg_match('/namespace Archi\\\\Modules\\\\local/', $contents)) {
+        if (!$this->hasNamespace($contents)) {
             throw new InvalidLocalModule(
                 'Module ' . $this->getName() . ': ' . $moduleFile
-                . ' class must be in namespace Archi\\Modules\\Local'
+                . ' does not have a namespace.'
             );
         }
+        $this->namespace = $this->getNamespaceFromContencts($contents);
+        $this->className = $this->getClassNameFromContents($contents);
     }
+
+    /**
+     * @param string $contents
+     * @return false|int
+     */
+    private function hasNamespace(string $contents): bool
+    {
+        return (bool)preg_match('/namespace ([a-zA-Z\\\\]*);/im', $contents);
+    }
+
+    private function getNamespaceFromContencts(string $contents): string
+    {
+        preg_match('/namespace ([a-zA-Z\\\\]*);/im', $contents, $matches);
+        return $matches[1];
+    }
+
+    /**
+     * @return string
+     */
+    public function getDirectory(): string
+    {
+        return $this->directory;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNamespace(): string
+    {
+        return $this->namespace;
+    }
+
+    public function getClassName(): string
+    {
+        return '\\' . $this->namespace . '\\' . $this->className;
+    }
+
+    private function getClassNameFromContents(string $contents): string
+    {
+        if (!preg_match('/class ([A-Za-z0-9]*)/', $contents, $matches)) {
+            throw new InvalidLocalModule('Module ' . $this->name . ' is not valid.');
+        }
+
+        return $matches[1];
+    }
+
 }

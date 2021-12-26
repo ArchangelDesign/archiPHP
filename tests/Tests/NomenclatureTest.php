@@ -17,6 +17,8 @@ class NomenclatureTest extends TestCase
         $this->assertEquals('CamelCaseAndSnake', $output);
         $output = Nomenclature::toPascalCase('camelCase and spaces');
         $this->assertEquals('CamelCaseAndSpaces', $output);
+        $output = Nomenclature::toPascalCase('AlreadyPascalCase');
+        $this->assertEquals('AlreadyPascalCase', $output);
     }
 
     public function testCamelCase()

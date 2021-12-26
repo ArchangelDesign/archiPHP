@@ -5,6 +5,7 @@ namespace Archi\Module;
 use Archi\Environment\Env;
 use Archi\Helper\Directory;
 use Archi\Helper\Nomenclature;
+use Archi\Module\Exception\ModuleNotFound;
 
 class ModuleManager
 {
@@ -77,6 +78,7 @@ class ModuleManager
 
         $moduleJson = json_decode(file_get_contents($this->getModuleJsonFilePath($directory)));
         $module = $this->getModuleFromJson($directory, $moduleJson);
+        $module->preLoad();
         $this->preLoadedModules[$module->getNameInCamelCase()] = $module;
         if ($this->isAutoloadEnabled()) {
             $this->loadModule($module);
@@ -132,5 +134,14 @@ class ModuleManager
     public function hasModule(string $moduleName): bool
     {
         return isset($this->preLoadedModules[Nomenclature::toPascalCase($moduleName)]);
+    }
+
+    public function getModule(string $moduleName): Module
+    {
+        if (!$this->hasModule($moduleName)) {
+            throw new ModuleNotFound('Cannot locate module ' . $moduleName);
+        }
+
+        return $this->preLoadedModules[Nomenclature::toPascalCase($moduleName)];
     }
 }
