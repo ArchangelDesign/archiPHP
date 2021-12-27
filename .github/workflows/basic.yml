@@ -8,9 +8,7 @@ on:
 
 jobs:
   unit-tests:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
         with:
@@ -25,3 +23,9 @@ jobs:
           ./vendor/bin/phpcs --standard=PSR12 core
       - name: Execute tests
         run: vendor/bin/phpunit
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        run: docker build -t archi:local .
+        run: docker
