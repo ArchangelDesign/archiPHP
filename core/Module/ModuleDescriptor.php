@@ -182,5 +182,4 @@ class ModuleDescriptor
     {
         return Nomenclature::toPascalCase($this->getName());
     }
-
 }
