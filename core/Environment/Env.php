@@ -2,6 +2,8 @@
 
 namespace Archi\Environment;
 
+use Archi\Helper\Directory;
+
 class Env
 {
     public const DS = '/';
@@ -12,7 +14,7 @@ class Env
 
     public static function initialize(string $workingDirectory)
     {
-        if (!is_dir($workingDirectory)) {
+        if (!Directory::isValid($workingDirectory)) {
             throw new \RuntimeException('Invalid working directory');
         }
         if (self::$initialized) {

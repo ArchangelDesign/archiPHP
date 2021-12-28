@@ -3,6 +3,7 @@
 namespace Archi\Module;
 
 use Archi\Environment\Env;
+use Archi\Helper\File;
 use Archi\Helper\Nomenclature;
 use Archi\Module\Exception\InvalidLocalModule;
 
@@ -122,7 +123,7 @@ class ModuleDescriptor
     public function preLoad()
     {
         $moduleFile = $this->getLoadFile();
-        $contents = file_get_contents($moduleFile);
+        $contents = File::getContentsWithoutPhpComments($moduleFile);
         if (!$this->hasNamespace($contents)) {
             throw new InvalidLocalModule(
                 'Module ' . $this->getName() . ': ' . $moduleFile

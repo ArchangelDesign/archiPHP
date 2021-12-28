@@ -50,7 +50,7 @@ class ModuleManager
             return;
         }
         $path = $this->getModuleDirectoryPath();
-        if (!is_dir($path)) {
+        if (!Directory::isValid($path)) {
             throw new \RuntimeException('Cannot load modules. Directory ' . $path . ' is not valid.');
         }
         $modules = Directory::getDirectoryList($path);
@@ -74,7 +74,7 @@ class ModuleManager
     {
         $directory = $this->getModuleDirectoryPath() . '/' . $directoryName;
 
-        if (!is_dir($directory)) {
+        if (!Directory::isValid($directory)) {
             return null;
         }
 

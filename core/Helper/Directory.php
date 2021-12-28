@@ -20,4 +20,9 @@ class Directory
 
         return $result;
     }
+
+    public static function isValid(string $path): bool
+    {
+        return is_dir($path);
+    }
 }

@@ -1,4 +1,8 @@
 <?php
+/*
+ * Debug Bar
+ * Archi PHP Framework Module
+ */
 
 namespace Archi\Debug;
 
