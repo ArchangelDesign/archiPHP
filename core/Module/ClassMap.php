@@ -2,36 +2,62 @@
 
 namespace Archi\Module;
 
-class ClassMap implements \Iterator, \Countable
+use Archi\Helper\File;
+use Archi\Helper\Nomenclature;
+
+abstract class ClassMap implements \Iterator, \Countable
 {
+    private array $classMap = [];
+    private int $size = 0;
+    private ?int $position = null;
 
     public function current()
     {
-        // TODO: Implement current() method.
+        return $this->classMap[$this->position]['location'];
     }
 
     public function next()
     {
-        // TODO: Implement next() method.
+        $this->position++;
     }
 
     public function key()
     {
-        // TODO: Implement key() method.
+        return $this->classMap[$this->position]['className'];
     }
 
     public function valid()
     {
-        // TODO: Implement valid() method.
+        if (is_null($this->position)) {
+            return false;
+        }
+        if ($this->position > $this->count()) {
+            return false;
+        }
+
+        return true;
     }
 
     public function rewind()
     {
-        // TODO: Implement rewind() method.
+        $this->position = 0;
     }
 
     public function count()
     {
-        // TODO: Implement count() method.
+        return count($this->classMap);
+    }
+
+    protected function push(string $className, string $location)
+    {
+        if ($className != Nomenclature::toPascalCase($className)) {
+            throw new \RuntimeException('Invalid class name ' . $className);
+        }
+        if (!File::exists($location)) {
+            throw new \RuntimeException('Invalid file specified for class ' . $className . ' | ' . $location);
+        }
+
+        $this->classMap[] = ['className' => $className, 'location' => $location];
+        $this->size++;
     }
 }
