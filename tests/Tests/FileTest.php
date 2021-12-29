@@ -15,4 +15,11 @@ class FileTest extends TestCase
         $this->assertTrue(strlen($contents) == 30);
         $this->assertStringContainsString('namespace Archi\Debug;', $contents);
     }
+
+    public function testNoExtension()
+    {
+        $this->assertEquals('file', File::noExtension('file.ext'));
+        $this->assertEquals('file.ext', File::noExtension('file.ext.tmp'));
+        $this->assertEquals('file', File::noExtension('file.Dockerfile'));
+    }
 }
