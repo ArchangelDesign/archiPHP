@@ -20,4 +20,26 @@ class Nomenclature
     {
         return lcfirst(self::toPascalCase($input));
     }
+
+    public static function isValidClassName(string $className): bool
+    {
+        $parts = explode('\\', $className);
+
+        if (count($parts) == 1) {
+            return self::isValidPascalCase($className);
+        }
+
+        foreach ($parts as $part) {
+            if (!self::isValidPascalCase($part)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static function isValidPascalCase(string $className): bool
+    {
+        return $className == self::toPascalCase($className);
+    }
 }

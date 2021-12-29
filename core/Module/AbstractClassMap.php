@@ -5,15 +5,19 @@ namespace Archi\Module;
 use Archi\Helper\File;
 use Archi\Helper\Nomenclature;
 
-abstract class ClassMap implements \Iterator, \Countable
+abstract class AbstractClassMap implements \Iterator, \Countable
 {
-    private array $classMap = [];
+    private array $classStack = [];
     private int $size = 0;
     private ?int $position = null;
+    private array $classMap = [];
 
     public function current()
     {
-        return $this->classMap[$this->position]['location'];
+        if (is_null($this->position)) {
+            $this->rewind();
+        }
+        return $this->classStack[$this->position]['location'];
     }
 
     public function next()
@@ -23,7 +27,7 @@ abstract class ClassMap implements \Iterator, \Countable
 
     public function key()
     {
-        return $this->classMap[$this->position]['className'];
+        return $this->classStack[$this->position]['className'];
     }
 
     public function valid()
@@ -35,7 +39,7 @@ abstract class ClassMap implements \Iterator, \Countable
             return false;
         }
 
-        return true;
+        return isset($this->classStack[$this->position]);
     }
 
     public function rewind()
@@ -45,19 +49,33 @@ abstract class ClassMap implements \Iterator, \Countable
 
     public function count()
     {
-        return count($this->classMap);
+        return $this->size;
     }
 
     protected function push(string $className, string $location)
     {
-        if ($className != Nomenclature::toPascalCase($className)) {
+        if ($this->has($className)) {
+            return;
+        }
+        if (!Nomenclature::isValidClassName($className)) {
             throw new \RuntimeException('Invalid class name ' . $className);
         }
         if (!File::exists($location)) {
             throw new \RuntimeException('Invalid file specified for class ' . $className . ' | ' . $location);
         }
 
-        $this->classMap[] = ['className' => $className, 'location' => $location];
+        $this->classStack[] = ['className' => $className, 'location' => $location];
+        $this->classMap[$className] = $location;
         $this->size++;
+    }
+
+    public function has(string $className): bool
+    {
+        return isset($this->classMap[$className]);
+    }
+
+    public function getLocation(string $className): string
+    {
+        return $this->classMap[$className];
     }
 }

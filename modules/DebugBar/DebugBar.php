@@ -6,13 +6,13 @@
 
 namespace Archi\Debug;
 
-use Archi\Module\ClassMap;
+use Archi\Module\AbstractClassMap;
 use Archi\Module\ModuleInterface;
 
 class DebugBar implements ModuleInterface
 {
 
-    public function getClassMap(): ClassMap
+    public function getClassMap(): AbstractClassMap
     {
         // TODO: Implement getClassMap() method.
     }
