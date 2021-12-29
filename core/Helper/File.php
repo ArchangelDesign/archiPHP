@@ -120,4 +120,15 @@ class File
     {
         return feof($handle);
     }
+
+    public static function getExtension(string $subject): string
+    {
+        return substr($subject, strrpos($subject, '.') + 1);
+    }
+
+    public static function noExtension($fileName): string
+    {
+        $ext = self::getExtension($fileName);
+        return str_replace('.' . $ext, '', $fileName);
+    }
 }

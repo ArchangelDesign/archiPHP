@@ -38,7 +38,7 @@ class Nomenclature
         return true;
     }
 
-    private static function isValidPascalCase(string $className): bool
+    public static function isValidPascalCase(string $className): bool
     {
         return $className == self::toPascalCase($className);
     }
