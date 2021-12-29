@@ -5,7 +5,7 @@ namespace Archi\Module;
 use Archi\Helper\File;
 use Archi\Helper\Nomenclature;
 
-abstract class AbstractClassMap implements \Iterator, \Countable
+abstract class AbstractClassMap implements ClassMapInterface
 {
     private array $classStack = [];
     private int $size = 0;

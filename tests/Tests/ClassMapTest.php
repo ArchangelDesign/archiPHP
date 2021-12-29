@@ -16,5 +16,6 @@ class ClassMapTest extends TestCase
             $this->assertEquals(self::class, $key);
             $this->assertEquals(__FILE__, $value);
         }
+        $this->assertCount(1, $cm);
     }
 }
