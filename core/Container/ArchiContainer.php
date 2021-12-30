@@ -273,7 +273,7 @@ class ArchiContainer implements ContainerInterface
         return self::getInstance()->get('Request');
     }
 
-    private function hasFactory(string $id)
+    private function hasFactory(string $id): bool
     {
         return isset($this->factories[$id]);
     }
