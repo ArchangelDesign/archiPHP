@@ -14,8 +14,7 @@ class EventDispatcherTest extends TestCase
 {
     public function testRegistrationAndDispatching()
     {
-        /** @var ArchiDispatcher $dispatcher */
-        $dispatcher = ArchiContainer::getInstance()->get('Dispatcher');
+        $dispatcher = ArchiContainer::getDispatcher();
         $this->assertInstanceOf(ArchiDispatcher::class, $dispatcher);
         $e = new TestEvent();
         $this->assertEquals('Archi\Dispatcher\TestObjects\TestEvent', $e->getName());

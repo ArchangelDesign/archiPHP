@@ -18,7 +18,7 @@ class ModuleManager
     private static bool $modulesPreLoaded = false;
 
     /** @var ModuleDescriptor[] */
-    private array $preLoadedModules = [];
+    private array $descriptors = [];
 
     /** @var ModuleInterface[] */
     private array $modules = [];
@@ -93,7 +93,7 @@ class ModuleManager
         } catch (InvalidModule $e) {
             return null;
         }
-        $this->preLoadedModules[$module->getNameInPascalCase()] = $module;
+        $this->descriptors[$module->getNameInPascalCase()] = $module;
         $this->classMap = array_merge(
             $this->classMap,
             $this->getModuleInstance($module->getPascalName())->getClassMap()->toArray()
@@ -152,7 +152,7 @@ class ModuleManager
 
     public function getPreloadedModules(): array
     {
-        return $this->preLoadedModules;
+        return $this->descriptors;
     }
 
     public function isLoaded(string $moduleName): bool
@@ -162,7 +162,7 @@ class ModuleManager
 
     public function hasModule(string $moduleName): bool
     {
-        return isset($this->preLoadedModules[$this->normalizeName($moduleName)]);
+        return isset($this->descriptors[$this->normalizeName($moduleName)]);
     }
 
     /**
@@ -200,6 +200,6 @@ class ModuleManager
 
     public function getModuleDescriptor(string $moduleName)
     {
-        return $this->preLoadedModules[$this->normalizeName($moduleName)];
+        return $this->descriptors[$this->normalizeName($moduleName)];
     }
 }

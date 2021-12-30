@@ -19,7 +19,7 @@ class DebugBar implements ModuleInterface
     public function getClassMap(): ClassMapInterface
     {
         return new PsrClassMap(
-            ArchiContainer::getInstance()->get('ModuleManager')->getModuleDescriptor('DebugBar'),
+            ArchiContainer::getModuleManager()->getModuleDescriptor('DebugBar'),
             'src'
         );
     }

@@ -114,8 +114,7 @@ class Logger implements LoggerInterface
 
     private function dispatch($level, $message, array $context = [])
     {
-        /** @var ConfigProvider $config */
-        $config = ArchiContainer::getInstance()->get('Config');
+        $config = ArchiContainer::getConfig();
 
         if (!$config->hasLoggerConfig()) {
             $this->fallback($level, $message, array_merge($this->context, $context));

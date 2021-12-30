@@ -2,7 +2,10 @@
 
 namespace Archi\Container;
 
+use Archi\Config\ConfigProvider;
+use Archi\Dispatcher\ArchiDispatcher;
 use Archi\Dispatcher\Provider\RequestProvider;
+use Archi\Http\Request\ArchiRequest;
 use Archi\Log\CoreLoggerProvider;
 use Archi\Module\ModuleManager;
 use Archi\Module\ModuleManagerProvider;
@@ -245,6 +248,26 @@ class ArchiContainer implements ContainerInterface
     {
         // @TODO: throw if not in testing
         self::$instance = new static();
+    }
+
+    public static function getModuleManager(): ModuleManager
+    {
+        return self::getInstance()->get('ModuleManager');
+    }
+
+    public static function getDispatcher(): ArchiDispatcher
+    {
+        return self::getInstance()->get('Dispatcher');
+    }
+
+    public static function getConfig(): ConfigProvider
+    {
+        return self::getInstance()->get('Config');
+    }
+
+    public static function getRequest(): ArchiRequest
+    {
+        return self::getInstance()->get('Request');
     }
 
     private function hasFactory(string $id)

@@ -10,17 +10,17 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // Initialize
 Env::initialize(dirname(__DIR__));
-ArchiContainer::getInstance()->get('ModuleManager')->preloadModules();
+ArchiContainer::getModuleManager()->preloadModules();
 
 // Logger
 $logger = new Logger(['location' => 'bootstrap']);
 $logger->debug('Staring application');
 
 // Dispatch request
-$dispatcher = ArchiContainer::getInstance()->get('Dispatcher');
+$dispatcher = ArchiContainer::getDispatcher();
 /** @var \Archi\Http\Request\ArchiRequest $request */
-$request = ArchiContainer::getInstance()->get('Request');
+$request = ArchiContainer::getRequest();
 $dispatcher->dispatch(new RequestEvent($request));
 
 // Done.
-var_dump(ArchiContainer::getInstance()->get('ModuleManager')->getPreloadedModules());
+var_dump(ArchiContainer::getModuleManager()->getPreloadedModules());
