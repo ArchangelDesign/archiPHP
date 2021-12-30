@@ -7,7 +7,7 @@ use Archi\Log\LogHandler;
 class ConfigProvider
 {
     /** @var LogHandler[] */
-    private $handlers = [];
+    private array $handlers = [];
 
     public function hasLoggerConfig(): bool
     {

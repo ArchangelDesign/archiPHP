@@ -18,9 +18,8 @@ $logger->debug('Staring application');
 
 // Dispatch request
 $dispatcher = ArchiContainer::getDispatcher();
-/** @var \Archi\Http\Request\ArchiRequest $request */
 $request = ArchiContainer::getRequest();
 $dispatcher->dispatch(new RequestEvent($request));
 
 // Done.
-var_dump(ArchiContainer::getModuleManager()->getPreloadedModules());
+var_dump(ArchiContainer::getModuleManager()->getDescriptors());

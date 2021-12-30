@@ -150,7 +150,7 @@ class ModuleManager
         $this->pushModuleInstance($module, $instance);
     }
 
-    public function getPreloadedModules(): array
+    public function getDescriptors(): array
     {
         return $this->descriptors;
     }
