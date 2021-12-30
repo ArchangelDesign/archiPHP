@@ -23,6 +23,9 @@ class ModuleManager
     /** @var ModuleInterface[] */
     private array $modules = [];
 
+    /** @var ClassMapInterface[] */
+    private array $classMap = [];
+
     private function __construct()
     {
         if (!Env::isInitialized()) {
@@ -67,12 +70,12 @@ class ModuleManager
      */
     private function getModuleDirectoryPath(): string
     {
-        return Env::cwd() . '/' . $this->getModuleDirectoryName();
+        return Env::cwd() . DIRECTORY_SEPARATOR . $this->getModuleDirectoryName();
     }
 
     private function preloadModule(string $directoryName): ?ModuleDescriptor
     {
-        $directory = $this->getModuleDirectoryPath() . '/' . $directoryName;
+        $directory = $this->getModuleDirectoryPath() . DIRECTORY_SEPARATOR . $directoryName;
 
         if (!Directory::isValid($directory)) {
             return null;
@@ -85,10 +88,16 @@ class ModuleManager
         $moduleJson = json_decode(file_get_contents($this->getModuleJsonFilePath($directory)));
         $module = $this->getModuleDescriptorFromJson($directory, $moduleJson);
         $module->preLoad();
-        $this->preLoadedModules[$module->getNameInPascalCase()] = $module;
-        if ($this->isAutoloadEnabled()) {
+        try {
             $this->loadModule($module);
+        } catch (InvalidModule $e) {
+            return null;
         }
+        $this->preLoadedModules[$module->getNameInPascalCase()] = $module;
+        $this->classMap = array_merge(
+            $this->classMap,
+            $this->getModuleInstance($module->getPascalName())->getClassMap()->toArray()
+        );
 
         return $module;
     }

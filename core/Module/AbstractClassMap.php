@@ -78,4 +78,9 @@ abstract class AbstractClassMap implements ClassMapInterface
     {
         return $this->classMap[$className];
     }
+
+    public function toArray(): array
+    {
+        return $this->classMap;
+    }
 }

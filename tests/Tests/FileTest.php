@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class FileTest extends TestCase
 {
-    public function testFileCOntentsWithoutComments()
+    public function testFileContentsWithoutComments()
     {
         $dir = dirname(__DIR__, 2);
         $file = $dir . '/modules/DebugBar/DebugBar.php';

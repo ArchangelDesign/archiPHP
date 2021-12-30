@@ -10,10 +10,19 @@ use Archi\Container\TestObjects\NoDependencyClass;
 use Archi\Container\TestObjects\OneDependencyAndNoTypeArgumentWithDefaultValue;
 use Archi\Container\TestObjects\SimpleProvider;
 use Archi\Container\TestObjects\SingletonTest;
+use Archi\Environment\Env;
 use PHPUnit\Framework\TestCase;
 
 class ContainerTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        if (!Env::isInitialized()) {
+            Env::initialize(dirname(__DIR__, 2));
+        }
+    }
+
     public function testAutowire()
     {
         ArchiContainer::reset();

@@ -4,6 +4,7 @@ namespace Archi\Container;
 
 use Archi\Dispatcher\Provider\RequestProvider;
 use Archi\Log\CoreLoggerProvider;
+use Archi\Module\ModuleManager;
 use Archi\Module\ModuleManagerProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;

@@ -6,9 +6,11 @@
 
 namespace Archi\Debug;
 
+use Archi\Container\ArchiContainer;
 use Archi\Module\AbstractClassMap;
 use Archi\Module\ClassMapInterface;
 use Archi\Module\ModuleInterface;
+use Archi\Module\PsrClassMap;
 use Archi\Module\SimpleClassMap;
 
 class DebugBar implements ModuleInterface
@@ -16,6 +18,9 @@ class DebugBar implements ModuleInterface
 
     public function getClassMap(): ClassMapInterface
     {
-        return new SimpleClassMap();
+        return new PsrClassMap(
+            ArchiContainer::getInstance()->get('ModuleManager')->getModuleDescriptor('DebugBar'),
+            'src'
+        );
     }
 }
