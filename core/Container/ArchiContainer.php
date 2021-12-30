@@ -5,6 +5,7 @@ namespace Archi\Container;
 use Archi\Config\ConfigProvider;
 use Archi\Dispatcher\ArchiDispatcher;
 use Archi\Dispatcher\Provider\RequestProvider;
+use Archi\Environment\Env;
 use Archi\Http\Request\ArchiRequest;
 use Archi\Log\CoreLoggerProvider;
 use Archi\Module\ModuleManager;
@@ -246,7 +247,9 @@ class ArchiContainer implements ContainerInterface
 
     public static function reset()
     {
-        // @TODO: throw if not in testing
+        if (!Env::isInTesting()) {
+            throw new \RuntimeException('Container can only be reset in testing mode.');
+        }
         self::$instance = new static();
     }
 

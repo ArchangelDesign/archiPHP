@@ -11,8 +11,9 @@ class Env
 
     private static ?string $workingDirectory;
     private static $variables = [];
+    private static bool $isInTesting = false;
 
-    public static function initialize(string $workingDirectory)
+    public static function initialize(string $workingDirectory, bool $isInTesting = false)
     {
         if (!Directory::isValid($workingDirectory)) {
             throw new \RuntimeException('Invalid working directory');
@@ -22,6 +23,7 @@ class Env
         }
         self::$workingDirectory = $workingDirectory;
         self::$initialized = true;
+        self::$isInTesting = $isInTesting;
         self::loadEnvFile();
     }
 
@@ -122,5 +124,10 @@ class Env
     public static function ds()
     {
         return self::DS;
+    }
+
+    public static function isInTesting(): bool
+    {
+        return self::$isInTesting;
     }
 }

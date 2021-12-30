@@ -19,7 +19,7 @@ class ContainerTest extends TestCase
     {
         parent::setUp();
         if (!Env::isInitialized()) {
-            Env::initialize(dirname(__DIR__, 2));
+            Env::initialize(dirname(__DIR__, 2), true);
         }
     }
 
