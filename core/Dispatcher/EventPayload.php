@@ -44,6 +44,11 @@ class EventPayload
         return $this->request;
     }
 
+    public function hasRequest(): bool
+    {
+        return !empty($this->request);
+    }
+
     public function getPayload(): array
     {
         return $this->payload;

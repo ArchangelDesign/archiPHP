@@ -1,6 +1,6 @@
 <?php
 
-namespace Archi;
+namespace Archi\Helper;
 
 class Arr
 {

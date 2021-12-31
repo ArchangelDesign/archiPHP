@@ -2,7 +2,7 @@
 
 namespace Archi\Http\Request;
 
-use Archi\Arr;
+use Archi\Helper\Arr;
 use Archi\Http\ProtocolVersion;
 use Archi\Http\RequestStream;
 use Psr\Http\Message\RequestInterface;
