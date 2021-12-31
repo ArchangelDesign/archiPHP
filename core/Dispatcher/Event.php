@@ -4,7 +4,7 @@ namespace Archi\Dispatcher;
 
 use Psr\EventDispatcher\StoppableEventInterface;
 
-abstract class Event implements StoppableEventInterface
+abstract class Event implements EventInterface
 {
 
     private $stopPropagation = false;
@@ -37,9 +37,9 @@ abstract class Event implements StoppableEventInterface
         return $this->name;
     }
 
-    public function stopPropagation(bool $stop = true)
+    public function stopPropagation()
     {
-        $this->stopPropagation = $stop;
+        $this->stopPropagation = true;
     }
 
     public function getPayload(): EventPayload
