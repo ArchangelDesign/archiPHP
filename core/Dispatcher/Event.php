@@ -2,8 +2,6 @@
 
 namespace Archi\Dispatcher;
 
-use Psr\EventDispatcher\StoppableEventInterface;
-
 abstract class Event implements EventInterface
 {
 
