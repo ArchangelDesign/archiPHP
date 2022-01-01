@@ -18,8 +18,14 @@ class FilesystemDriver implements CacheDriverInterface
      * FilesystemDriver constructor.
      * @param string $directory
      */
-    public function __construct(string $directory)
+    public function __construct(?string $directory = null)
     {
+        if (is_null($directory)) {
+            $directory = ArchiContainer::getCache()->getConfig()->getHost();
+        }
+        if (empty($directory) || !Directory::exists($directory) || !Directory::isWritable($directory)) {
+            throw new \RuntimeException('Invalid cache directory provided. ' . $directory);
+        }
         $this->directory = $directory;
     }
 
@@ -49,6 +55,6 @@ class FilesystemDriver implements CacheDriverInterface
 
     public function save(CacheItem $item): bool
     {
-        File::writeContents(File::buildPath($this->directory, $item->getKey()), serialize($item));
+        return File::writeContents(File::buildPath($this->directory, $item->getKey()), serialize($item));
     }
 }

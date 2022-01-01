@@ -40,6 +40,14 @@ class ArchiContainer implements ContainerInterface
         $this->registerFactory(new RequestProvider());
     }
 
+    public function injectInstance(string $key, $instance)
+    {
+        if ($this->hasInstance($key)) {
+            throw new \RuntimeException('Trying to override instance for ' . $key);
+        }
+        $this->instances[$key] = $instance;
+    }
+
     private function __clone()
     {
     }
@@ -167,7 +175,7 @@ class ArchiContainer implements ContainerInterface
      * @param  string $id
      * @return bool
      */
-    private function hasInstance(string $id): bool
+    public function hasInstance(string $id): bool
     {
         return isset($this->instances[$id]);
     }

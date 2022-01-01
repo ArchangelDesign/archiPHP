@@ -3,6 +3,7 @@
 namespace Archi\Cache;
 
 use Archi\Cache\Driver\ApcuDriver;
+use Archi\Config\CacheConfig;
 use Archi\Container\ArchiContainer;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
@@ -10,25 +11,36 @@ use Psr\Cache\InvalidArgumentException;
 
 class ArchiCache implements CacheItemPoolInterface
 {
-    private CacheDriverInterface $driver;
+    private ?CacheDriverInterface $driver = null;
 
     /** @var CacheItemInterface[] */
     private array $saveQueue = [];
+    /**
+     * @var CacheConfig
+     */
+    private CacheConfig $config;
 
     /**
      * ArchiCache constructor.
+     * @param CacheConfig $config
      */
-    public function __construct()
+    public function __construct(CacheConfig $config)
     {
-        if (!ArchiContainer::getConfig()->hasCacheConfig()) {
-            $this->driver = new ApcuDriver();
+        $this->config = $config;
+    }
+
+    public function getDriver(): CacheDriverInterface
+    {
+        if (is_null($this->driver)) {
+            $this->driver = ArchiContainer::getInstance()->get($this->config->getDriver());
         }
-        // @TODO: Load cache config
+
+        return $this->driver;
     }
 
     public function getItem($key)
     {
-        return $this->driver->fetch($key);
+        return $this->getDriver()->fetch($key);
     }
 
     public function getItems(array $keys = array())
@@ -43,17 +55,17 @@ class ArchiCache implements CacheItemPoolInterface
 
     public function hasItem($key)
     {
-        return $this->driver->has($key);
+        return $this->getDriver()->has($key);
     }
 
     public function clear()
     {
-        return $this->driver->clear();
+        return $this->getDriver()->clear();
     }
 
     public function deleteItem($key)
     {
-        return $this->driver->delete($key);
+        return $this->getDriver()->delete($key);
     }
 
     public function deleteItems(array $keys)
@@ -73,7 +85,7 @@ class ArchiCache implements CacheItemPoolInterface
         if (!$item instanceof CacheItem) {
             $item = new CacheItem($item->getKey(), $item->get());
         }
-        return $this->driver->save($item);
+        return $this->getDriver()->save($item);
     }
 
     public function saveDeferred(CacheItemInterface $item)
@@ -87,5 +99,10 @@ class ArchiCache implements CacheItemPoolInterface
             $this->save($i);
         }
         $this->saveQueue = [];
+    }
+
+    public function getConfig(): CacheConfig
+    {
+        return $this->config;
     }
 }

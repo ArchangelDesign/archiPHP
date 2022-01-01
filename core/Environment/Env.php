@@ -15,7 +15,7 @@ class Env
 
     public static function initialize(string $workingDirectory, bool $isInTesting = false)
     {
-        if (!Directory::isValid($workingDirectory)) {
+        if (!Directory::exists($workingDirectory)) {
             throw new \RuntimeException('Invalid working directory');
         }
         if (self::$initialized) {
@@ -129,5 +129,10 @@ class Env
     public static function isInTesting(): bool
     {
         return self::$isInTesting;
+    }
+
+    public static function getTempDir(): string
+    {
+        return sys_get_temp_dir();
     }
 }

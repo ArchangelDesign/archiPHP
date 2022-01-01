@@ -9,7 +9,7 @@ class Directory
         return self::getSubjects($directory, true, false);
     }
 
-    public static function isValid(string $path): bool
+    public static function exists(string $path): bool
     {
         return is_dir($path);
     }
@@ -53,5 +53,15 @@ class Directory
     public static function getPhpFiles(string $directory)
     {
         return self::getSubjects($directory, false, true, ['php']);
+    }
+
+    public static function isWritable(string $directory): bool
+    {
+        return is_writable($directory);
+    }
+
+    public static function create(string $directory): bool
+    {
+        return mkdir($directory);
     }
 }

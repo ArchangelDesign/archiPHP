@@ -6,18 +6,68 @@ use Archi\Environment\Env;
 
 class CacheConfig
 {
-    private static ?string $driver;
-    private static ?string $host;
-    private static ?string $username;
-    private static ?string $password;
+    private ?string $driver;
+    private ?string $host;
+    private ?string $username;
+    private ?string $password;
 
-    public static function getDriver(): string
+    /**
+     * CacheConfig constructor.
+     * @param string|null $driver
+     * @param string|null $host
+     * @param string|null $username
+     * @param string|null $password
+     */
+    public function __construct(
+        ?string $driver = null,
+        ?string $host = null,
+        ?string $username = null,
+        ?string $password = null
+    ) {
+        $this->driver = $this->getOrEnv($driver, 'CACHE_DRIVER');
+        $this->host = $this->getOrEnv($host, 'CACHE_HOST');
+        $this->username = $this->getOrEnv($username, 'CACHE_USERNAME');
+        $this->password = $this->getOrEnv($password, 'CACHE_PASSWORD');
+    }
+
+    private function getOrEnv(?string $driver, string $envKey)
     {
-        if (!is_null(self::$driver)) {
-            return self::$driver;
+        if (!is_null($driver)) {
+            return $driver;
         }
 
-        self::$driver = Env::get('CACHE_DRIVER', 'FileSystemCache');
-        return self::$driver;
+        return Env::get($envKey);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDriver(): ?string
+    {
+        return $this->driver;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getHost(): ?string
+    {
+        return $this->host;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPassword(): ?string
+    {
+        return $this->password;
     }
 }
