@@ -123,7 +123,7 @@ class Env
 
     public static function ds()
     {
-        return self::DS;
+        return DIRECTORY_SEPARATOR;
     }
 
     public static function isInTesting(): bool

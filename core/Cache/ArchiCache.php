@@ -2,6 +2,7 @@
 
 namespace Archi\Cache;
 
+use Archi\Cache\Driver\ApcuDriver;
 use Archi\Container\ArchiContainer;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
@@ -11,37 +12,48 @@ class ArchiCache implements CacheItemPoolInterface
 {
     private CacheDriverInterface $driver;
 
+    /** @var CacheItemInterface[] */
+    private array $saveQueue = [];
+
     /**
      * ArchiCache constructor.
      */
     public function __construct()
     {
-        ArchiContainer::getConfig()->hasCacheConfig();
+        if (!ArchiContainer::getConfig()->hasCacheConfig()) {
+            $this->driver = new ApcuDriver();
+        }
+        // @TODO: Load cache config
     }
 
     public function getItem($key)
     {
-        // TODO: Implement getItem() method.
+        return $this->driver->fetch($key);
     }
 
     public function getItems(array $keys = array())
     {
-        // TODO: Implement getItems() method.
+        $result = [];
+        foreach ($keys as $key) {
+            $result[$key] = $this->getItem($key);
+        }
+
+        return $result;
     }
 
     public function hasItem($key)
     {
-        // TODO: Implement hasItem() method.
+        return $this->driver->has($key);
     }
 
     public function clear()
     {
-        // TODO: Implement clear() method.
+        return $this->driver->clear();
     }
 
     public function deleteItem($key)
     {
-        // TODO: Implement deleteItem() method.
+        return $this->driver->delete($key);
     }
 
     public function deleteItems(array $keys)
@@ -58,16 +70,22 @@ class ArchiCache implements CacheItemPoolInterface
 
     public function save(CacheItemInterface $item)
     {
-        // TODO: Implement save() method.
+        if (!$item instanceof CacheItem) {
+            $item = new CacheItem($item->getKey(), $item->get());
+        }
+        return $this->driver->save($item);
     }
 
     public function saveDeferred(CacheItemInterface $item)
     {
-        // TODO: Implement saveDeferred() method.
+        $this->saveQueue[] = $item;
     }
 
     public function commit()
     {
-        // TODO: Implement commit() method.
+        foreach ($this->saveQueue as $i) {
+            $this->save($i);
+        }
+        $this->saveQueue = [];
     }
 }

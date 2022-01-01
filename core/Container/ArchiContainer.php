@@ -2,6 +2,7 @@
 
 namespace Archi\Container;
 
+use Archi\Cache\ArchiCache;
 use Archi\Config\ConfigProvider;
 use Archi\Dispatcher\ArchiDispatcher;
 use Archi\Dispatcher\Provider\RequestProvider;
@@ -32,6 +33,8 @@ class ArchiContainer implements ContainerInterface
     {
         $this->register(new Binding('Config', 'Archi\Config\ConfigProvider', true));
         $this->register(new Binding('Dispatcher', 'Archi\Dispatcher\ArchiDispatcher', true));
+        $this->register(new Binding('Cache', 'Archi\Cache\ArchiCache', true));
+
         $this->registerfactory(new ModuleManagerProvider());
         $this->registerFactory(new CoreLoggerProvider());
         $this->registerFactory(new RequestProvider());
@@ -271,6 +274,11 @@ class ArchiContainer implements ContainerInterface
     public static function getRequest(): ArchiRequest
     {
         return self::getInstance()->get('Request');
+    }
+
+    public static function getCache(): ArchiCache
+    {
+        return self::getInstance()->get('Cache');
     }
 
     private function hasFactory(string $id): bool

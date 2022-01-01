@@ -8,7 +8,7 @@ class ConfigProvider
 {
     /** @var LogHandler[] */
     private array $handlers = [];
-    private ?CacheConfig $cacheConfig;
+    private ?CacheConfig $cacheConfig = null;
 
     public function hasLoggerConfig(): bool
     {

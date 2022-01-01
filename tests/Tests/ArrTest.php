@@ -27,6 +27,7 @@ class ArrTest extends TestCase
         $this->assertEquals('one', $output['one']);
         $this->assertEquals('two', $output['two']);
         $this->assertIsArray($output['three']);
+        $this->assertEquals('three ', $output['three'][0]);
     }
 
     public function testArrayKrtrim()

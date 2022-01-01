@@ -2,6 +2,8 @@
 
 namespace Archi\Helper;
 
+use Archi\Environment\Env;
+
 class File
 {
     public static function getContents(string $path, int $bufferSize = 1024): string
@@ -92,15 +94,20 @@ class File
         return $handle;
     }
 
-    public static function close($handle, bool $orThrow = true)
+    public static function close($handle, bool $orThrow = true): bool
     {
         if (!is_resource($handle)) {
             if (!$orThrow) {
-                return;
+                return false;
             }
             throw new \RuntimeException('Invalid file handle. Cannot close the file.');
         }
-        fclose($handle);
+        $result = fclose($handle);
+        if (!$result && $orThrow) {
+            throw new \RuntimeException('Cannot close file.');
+        }
+
+        return $result;
     }
 
     public static function exists(string $path): bool
@@ -130,5 +137,45 @@ class File
     {
         $ext = self::getExtension($fileName);
         return str_replace('.' . $ext, '', $fileName);
+    }
+
+    public static function buildPath(string $directory, string $fileName)
+    {
+        if (!ArchiString::endsWith($directory, Env::ds())) {
+            $directory .= Env::ds();
+        }
+
+        return $directory . $fileName;
+    }
+
+    public static function writeContents(string $path, string $contents): bool
+    {
+        $f = self::openForWriting($path);
+        self::write($f, $contents, strlen($contents));
+        return self::close($f);
+    }
+
+    /**
+     * @param string $filePath
+     * @return resource
+     */
+    public static function openForWriting(string $filePath)
+    {
+        $handle = fopen($filePath, 'w');
+        if (!$handle) {
+            throw new \RuntimeException('Cannot open file ' . $filePath . ' for writing.');
+        }
+
+        return $handle;
+    }
+
+    /**
+     * @param resource $handle
+     * @param string $contents
+     * @param int $length
+     */
+    private static function write($handle, string $contents, int $length)
+    {
+        fwrite($handle, $contents, $length);
     }
 }
