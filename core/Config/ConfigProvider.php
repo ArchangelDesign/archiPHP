@@ -8,6 +8,7 @@ class ConfigProvider
 {
     /** @var LogHandler[] */
     private array $handlers = [];
+    private ?CacheConfig $cacheConfig;
 
     public function hasLoggerConfig(): bool
     {
@@ -25,5 +26,10 @@ class ConfigProvider
     public function registerLogHandler(LogHandler $handler)
     {
         $this->handlers[] = $handler;
+    }
+
+    public function hasCacheConfig(): bool
+    {
+        return !is_null($this->cacheConfig);
     }
 }
