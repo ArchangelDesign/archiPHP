@@ -178,4 +178,9 @@ class File
     {
         fwrite($handle, $contents, $length);
     }
+
+    public static function remove($fileName): bool
+    {
+        return unlink($fileName);
+    }
 }

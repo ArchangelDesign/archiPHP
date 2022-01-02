@@ -72,9 +72,8 @@ class Directory
 
     public static function removeAllFiles(string $directory): void
     {
-        $allFiles = self::getFiles($directory);
-        foreach ($allFiles as $f) {
-            unlink(File::buildPath($directory, $f));
-        }
+        array_map(function ($f) use ($directory) {
+            File::remove(File::buildPath($directory, $f));
+        }, self::getFiles($directory));
     }
 }

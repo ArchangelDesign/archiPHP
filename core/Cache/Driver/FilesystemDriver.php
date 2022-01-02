@@ -43,14 +43,14 @@ class FilesystemDriver implements CacheDriverInterface
     {
         $allFiles = Directory::getFiles($this->directory);
         foreach ($allFiles as $f) {
-            unlink(File::buildPath($this->directory, $f));
+            File::remove(File::buildPath($this->directory, $f));
         }
         return true;
     }
 
     public function delete(string $key): bool
     {
-        unlink(File::buildPath($this->directory, $key));
+        File::remove(File::buildPath($this->directory, $key));
     }
 
     public function save(CacheItem $item): bool

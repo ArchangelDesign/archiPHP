@@ -35,6 +35,19 @@ class ArchiCacheTest extends TestCase
         $this->assertEquals('test-string-value', $cache->getItem('test-key')->get());
     }
 
+    public function testSerialization()
+    {
+        $obj = new \stdClass();
+        $obj->testKey = 'testValue';
+        $cache = $this->getArchiCache();
+        $cache->save(new CacheItem('obj', $obj));
+        $retrieved = $cache->getItem('obj');
+        $this->assertInstanceOf(CacheItem::class, $retrieved);
+        $retObj = $retrieved->get();
+        $this->assertInstanceOf(\stdClass::class, $retObj);
+        $this->assertEquals('testValue', $retObj->testKey);
+    }
+
 
     private function getCacheDir(): string
     {
