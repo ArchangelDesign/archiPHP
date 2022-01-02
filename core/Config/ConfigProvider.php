@@ -26,5 +26,4 @@ class ConfigProvider
     {
         $this->handlers[] = $handler;
     }
-
 }
