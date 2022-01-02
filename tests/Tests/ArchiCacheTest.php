@@ -57,10 +57,16 @@ class ArchiCacheTest extends TestCase
         if (ArchiContainer::getInstance()->hasInstance('Cache')) {
             return ArchiContainer::getCache();
         }
-        $sdfsdf = ArchiContainer::getInstance();
         $this->cache = new ArchiCache($this->getCacheConfig());
         ArchiContainer::getInstance()->injectInstance('Cache', $this->cache);
 
         return $this->cache;
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Directory::removeAllFiles($this->getCacheDir());
+        Directory::remove($this->getCacheDir());
     }
 }

@@ -64,4 +64,17 @@ class Directory
     {
         return mkdir($directory);
     }
+
+    public static function remove(string $directory): bool
+    {
+        return rmdir($directory);
+    }
+
+    public static function removeAllFiles(string $directory): void
+    {
+        $allFiles = self::getFiles($directory);
+        foreach ($allFiles as $f) {
+            unlink(File::buildPath($directory, $f));
+        }
+    }
 }
