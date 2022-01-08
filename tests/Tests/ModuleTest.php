@@ -54,7 +54,7 @@ class ModuleTest extends TestCase
     {
         /** @var ModuleManager $mm */
         $mm = ArchiContainer::getInstance()->get('ModuleManager');
-        $mm->preloadModules();
+        $mm->bootstrap();
         $this->assertTrue($mm->hasModule('DebugBar'));
         $namespace = $mm->getModuleDescriptor('DebugBar')->getNamespace();
         $this->assertEquals('Archi\Debug', $namespace);

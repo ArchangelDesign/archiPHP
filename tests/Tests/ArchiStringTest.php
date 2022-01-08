@@ -13,5 +13,7 @@ class ArchiStringTest extends TestCase
         $this->assertTrue(ArchiString::endsWith('/some/url', 'url'));
         $this->assertFalse(ArchiString::endsWith('/some/url', 'Url'));
         $this->assertFalse(ArchiString::endsWith('string-this-is', 'long-string-this-is'));
+        $this->assertFalse(ArchiString::endsWith('string-this-is', '_this-is'));
+        $this->assertFalse(ArchiString::endsWith('string-this-is', 'this-is-'));
     }
 }

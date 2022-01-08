@@ -10,7 +10,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // Initialize
 Env::initialize(dirname(__DIR__));
-ArchiContainer::getModuleManager()->preloadModules();
+ArchiContainer::getModuleManager()->bootstrap();
 
 // Logger
 $logger = new Logger(['location' => 'bootstrap']);

@@ -47,7 +47,7 @@ class ModuleManager
         return Env::get('ARCHI_MODULE_DIR', 'modules');
     }
 
-    public function preloadModules()
+    public function bootstrap()
     {
         if (self::$modulesPreLoaded) {
             return;
@@ -63,6 +63,7 @@ class ModuleManager
         }
 
         self::$modulesPreLoaded = true;
+        $this->bootstrapModules();
     }
 
     /**
@@ -201,5 +202,12 @@ class ModuleManager
     public function getModuleDescriptor(string $moduleName)
     {
         return $this->descriptors[$this->normalizeName($moduleName)];
+    }
+
+    private function bootstrapModules()
+    {
+        foreach ($this->modules as $moduleName => $moduleInstance) {
+            $moduleInstance->bootstrap(ArchiContainer::getInstance());
+        }
     }
 }

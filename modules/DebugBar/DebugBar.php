@@ -7,11 +7,11 @@
 namespace Archi\Debug;
 
 use Archi\Container\ArchiContainer;
-use Archi\Module\AbstractClassMap;
+use Archi\Http\Request\ArchiRequest;
+use Archi\Module\ClassMap\PsrClassMap;
 use Archi\Module\ClassMapInterface;
 use Archi\Module\ModuleInterface;
-use Archi\Module\PsrClassMap;
-use Archi\Module\SimpleClassMap;
+use DebugBar\RequestListener;
 
 class DebugBar implements ModuleInterface
 {
@@ -22,5 +22,11 @@ class DebugBar implements ModuleInterface
             ArchiContainer::getModuleManager()->getModuleDescriptor('DebugBar'),
             'src'
         );
+    }
+
+    public function bootstrap(ArchiContainer $container)
+    {
+        // @FIXME: make this work
+//        ArchiContainer::getDispatcher()->register(ArchiRequest::class, new RequestListener());
     }
 }
