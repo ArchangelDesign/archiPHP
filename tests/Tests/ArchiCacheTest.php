@@ -48,7 +48,6 @@ class ArchiCacheTest extends TestCase
         $this->assertEquals('testValue', $retObj->testKey);
     }
 
-
     private function getCacheDir(): string
     {
         return Env::getTempDir() . Env::ds() . 'archi-cache';

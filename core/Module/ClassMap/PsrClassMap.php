@@ -1,10 +1,11 @@
 <?php
 
-namespace Archi\Module;
+namespace Archi\Module\ClassMap;
 
 use Archi\Helper\Directory;
 use Archi\Helper\File;
 use Archi\Helper\Nomenclature;
+use Archi\Module\ModuleDescriptor;
 
 class PsrClassMap extends SimpleClassMap
 {

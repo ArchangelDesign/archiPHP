@@ -9,6 +9,9 @@ class ArchiString
         if (function_exists('str_ends_with')) {
             return str_ends_with($haystack, $needle);
         }
-        return substr($haystack, 0, strlen($needle)) === $needle;
+        if (strlen($haystack) < $needle) {
+            return false;
+        }
+        return substr($haystack, strlen($haystack) - strlen($needle), strlen($needle)) === $needle;
     }
 }

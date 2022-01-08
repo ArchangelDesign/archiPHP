@@ -1,6 +1,8 @@
 <?php
 
-namespace Archi\Module;
+namespace Archi\Module\ClassMap;
+
+use Archi\Module\AbstractClassMap;
 
 class SimpleClassMap extends AbstractClassMap
 {

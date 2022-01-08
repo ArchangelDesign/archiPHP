@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Archi\Module\SimpleClassMap;
+use Archi\Module\ClassMap\SimpleClassMap;
 use PHPUnit\Framework\TestCase;
 
 class ClassMapTest extends TestCase
