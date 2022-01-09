@@ -17,7 +17,7 @@ abstract class Event implements EventInterface
     {
         $this->stopPropagation = $stopPropagation;
         $this->name = get_called_class();
-        $this->payload = $payload;
+        $this->payload = is_null($payload) ? EventPayload::buildEmpty() : $payload;
     }
 
     public function isPropagationStopped(): bool

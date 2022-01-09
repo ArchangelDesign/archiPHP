@@ -28,12 +28,18 @@ class ListenerProvider implements ListenerProviderInterface
     /**
      * Registers a listener that will be invoked for given event
      *
-     * @param Event $event
+     * @param Event|string $event
      * @param ListenerInterface $listener
      */
-    public function register(Event $event, ListenerInterface $listener)
+    public function register($event, ListenerInterface $listener)
     {
-        $key = $event->getName();
+        if (!$event instanceof Event && !is_string($event)) {
+            throw new \RuntimeException(
+                'Event must be identified as either string or Archi\Dispatcher\Event instance.'
+            );
+        }
+
+        $key = $this->getEventKey($event);
         $this->prepareForNewListener($key);
         $this->pushListener($listener, $key);
     }
@@ -61,5 +67,14 @@ class ListenerProvider implements ListenerProviderInterface
         $this->listenerCallbacks[$key][] = function (Event $event) use ($listener) {
             return $listener->dispatch($event);
         };
+    }
+
+    private function getEventKey($event): string
+    {
+        if ($event instanceof Event) {
+            return $event->getName();
+        }
+
+        return $event;
     }
 }

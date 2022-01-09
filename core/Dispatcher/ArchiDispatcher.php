@@ -56,8 +56,8 @@ class ArchiDispatcher implements EventDispatcherInterface
         return $result;
     }
 
-    public function register(Event $event, ListenerInterface $listener)
+    public function register($subject, ListenerInterface $listener)
     {
-        $this->provider->register($event, $listener);
+        $this->provider->register($subject, $listener);
     }
 }

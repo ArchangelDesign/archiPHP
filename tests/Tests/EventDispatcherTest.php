@@ -26,4 +26,14 @@ class EventDispatcherTest extends TestCase
         $this->assertArrayHasKey('processed', $payload);
         $this->assertTrue($payload['processed']);
     }
+
+    public function testRegistrationWithString()
+    {
+        $dispatcher = ArchiContainer::getDispatcher();
+        $dispatcher->register('Archi\Dispatcher\TestObjects\TestEvent', new TestEventListener());
+        $e = new TestEvent();
+        $processedEvent = $dispatcher->dispatch($e);
+        $payload = $processedEvent->getPayload()->getPayload();
+        $this->assertTrue($payload['processed']);
+    }
 }

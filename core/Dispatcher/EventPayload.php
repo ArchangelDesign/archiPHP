@@ -39,6 +39,11 @@ class EventPayload
         return new static([], $request);
     }
 
+    public static function buildEmpty(): EventPayload
+    {
+        return new static([]);
+    }
+
     public function getRequest(): ?ArchiRequest
     {
         return $this->request;
