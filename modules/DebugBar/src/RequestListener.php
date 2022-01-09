@@ -1,6 +1,6 @@
 <?php
 
-namespace DebugBar;
+namespace Archi\Debug;
 
 use Archi\Dispatcher\Event;
 use Archi\Dispatcher\ListenerInterface;

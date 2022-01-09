@@ -14,6 +14,7 @@ use Archi\Module\ModuleManagerProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use function Composer\Autoload\includeFile;
 
 class ArchiContainer implements ContainerInterface
 {
@@ -38,6 +39,7 @@ class ArchiContainer implements ContainerInterface
         $this->registerfactory(new ModuleManagerProvider());
         $this->registerFactory(new CoreLoggerProvider());
         $this->registerFactory(new RequestProvider());
+        spl_autoload_register([$this, 'autoload']);
     }
 
     public function injectInstance(string $key, $instance)
@@ -114,6 +116,22 @@ class ArchiContainer implements ContainerInterface
     public function has(string $id): bool
     {
         return $this->hasBinding($id) || $this->hasFactory($id) || $this->isWireable($id);
+    }
+
+    public function autoload(string $class)
+    {
+        if (class_exists($class)) {
+            return null;
+        }
+        $moduleManager = self::getModuleManager();
+        $classMap = $moduleManager->getClassMap();
+        foreach ($classMap as $className => $fileName) {
+            if ($className == $class) {
+                return include($fileName);
+            }
+        }
+
+        return null;
     }
 
     /**

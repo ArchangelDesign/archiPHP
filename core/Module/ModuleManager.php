@@ -23,7 +23,7 @@ class ModuleManager
     /** @var ModuleInterface[] */
     private array $modules = [];
 
-    /** @var ClassMapInterface[] */
+    /** @var string[] */
     private array $classMap = [];
 
     private function __construct()
@@ -95,9 +95,10 @@ class ModuleManager
             return null;
         }
         $this->descriptors[$module->getNameInPascalCase()] = $module;
+        $cm = $this->getModuleInstance($module->getPascalName())->getClassMap()->toArray();
         $this->classMap = array_merge(
             $this->classMap,
-            $this->getModuleInstance($module->getPascalName())->getClassMap()->toArray()
+            $cm
         );
 
         return $module;
@@ -209,5 +210,13 @@ class ModuleManager
         foreach ($this->modules as $moduleName => $moduleInstance) {
             $moduleInstance->bootstrap(ArchiContainer::getInstance());
         }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getClassMap(): array
+    {
+        return $this->classMap;
     }
 }
