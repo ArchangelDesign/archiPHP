@@ -22,6 +22,16 @@ class File
         return $buffer;
     }
 
+    /**
+     * Returns file contents no larger than the buffer.
+     * Comments and `use` instructions will be omitted.
+     * If the `use` statement ends with new line character,
+     * it will also be omitted.
+     *
+     * @param string $path
+     * @param int $bufferSize
+     * @return string
+     */
     public static function getContentsWithoutPhpComments(string $path, int $bufferSize = 1024): string
     {
         $STATE_ZERO = 0;
@@ -29,6 +39,7 @@ class File
         $STATE_ONE_LINE_COMMENT = 2;
         $STATE_LONG_COMMENT = 3;
         $STATE_LONG_COMMENT_ASTRIX = 4;
+        $STATE_USE = 5;
         $buffer = "";
         $state = $STATE_ZERO;
         $currentBufferSize = 0;
@@ -41,6 +52,14 @@ class File
                     if ($char == '/') {
                         $state = $STATE_SLASH;
                         break;
+                    }
+                    if ($char == 'u') {
+                        $tempChar = $char . self::read($f, 2);
+                        if ($tempChar == 'use') {
+                            $state = $STATE_USE;
+                            break;
+                        }
+                        self::seekFromCurrentPosition($f, -2);
                     }
                     $buffer .= $char;
                     $currentBufferSize++;
@@ -73,6 +92,15 @@ class File
                         break;
                     }
                     break;
+                case $STATE_USE:
+                    if ($char == ';') {
+                        $tempChar = self::read($f, 1);
+                        if ($tempChar != "\n") {
+                            self::seekFromCurrentPosition($f, -1);
+                        }
+                        $state = $STATE_ZERO;
+                        break;
+                    }
             }
         }
         self::close($f);
@@ -126,6 +154,16 @@ class File
     public static function isEof($handle): bool
     {
         return feof($handle);
+    }
+
+    public static function tell($handle): int
+    {
+        return ftell($handle);
+    }
+
+    public static function seekFromCurrentPosition($handle, int $offset): int
+    {
+        return fseek($handle, $offset, SEEK_CUR);
     }
 
     public static function getExtension(string $subject): string

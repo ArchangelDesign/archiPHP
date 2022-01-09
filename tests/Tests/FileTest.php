@@ -16,6 +16,18 @@ class FileTest extends TestCase
         $this->assertStringContainsString('namespace Archi\Debug;', $contents);
     }
 
+    public function testFileContentsWithoutCommentsAndUses()
+    {
+        $dir = dirname(__DIR__, 2);
+        $file = $dir . '/core/Container/ArchiContainer.php';
+        $contents = File::getContentsWithoutPhpComments($file, 86);
+        $this->assertStringContainsString(
+            'class ArchiContainer implements ContainerInterface',
+            $contents,
+            '`Use` statements have not been properly omitted. (probably)'
+        );
+    }
+
     public function testNoExtension()
     {
         $this->assertEquals('file', File::noExtension('file.ext'));
