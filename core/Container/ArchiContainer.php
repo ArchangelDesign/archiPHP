@@ -14,7 +14,6 @@ use Archi\Module\ModuleManagerProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use function Composer\Autoload\includeFile;
 
 class ArchiContainer implements ContainerInterface
 {
