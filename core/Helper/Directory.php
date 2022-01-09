@@ -32,7 +32,7 @@ class Directory
             if (in_array($subject->getFilename(), ['.', '..'])) {
                 continue;
             }
-            if (empty($filter)) {
+            if (empty($extFilter)) {
                 $result[] = $subject->getFilename();
                 continue;
             }
