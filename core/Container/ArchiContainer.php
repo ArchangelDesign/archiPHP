@@ -11,6 +11,7 @@ use Archi\Http\Request\ArchiRequest;
 use Archi\Log\CoreLoggerProvider;
 use Archi\Module\ModuleManager;
 use Archi\Module\ModuleManagerProvider;
+use Archi\View\ViewManager;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -34,6 +35,7 @@ class ArchiContainer implements ContainerInterface
         $this->register(new Binding('Config', 'Archi\Config\ConfigProvider', true));
         $this->register(new Binding('Dispatcher', 'Archi\Dispatcher\ArchiDispatcher', true));
         $this->register(new Binding('Cache', 'Archi\Cache\ArchiCache', true));
+        $this->register(new Binding('ViewManager', 'Archi\View\ViewManager', true));
 
         $this->registerfactory(new ModuleManagerProvider());
         $this->registerFactory(new CoreLoggerProvider());
@@ -304,6 +306,11 @@ class ArchiContainer implements ContainerInterface
     public static function getCache(): ArchiCache
     {
         return self::getInstance()->get('Cache');
+    }
+
+    public static function getViewManager(): ViewManager
+    {
+        return self::getInstance()->get('ViewManager');
     }
 
     private function hasFactory(string $id): bool
