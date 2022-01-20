@@ -18,13 +18,17 @@ class ArchiRequest implements ServerRequestInterface
     private RequestMethod $method;
     private Uri $uri;
     private array $attributes = [];
+    private array $serverParams;
+    private array $cookieParams;
 
     public function __construct(
         RequestMethod $method,
         ProtocolVersion $protocolVersion,
         Uri $uri,
         array $headers,
-        ?RequestStream $body
+        ?RequestStream $body,
+        ?array $serverParams = null,
+        ?array $cookieParams = null
     ) {
         $this->method = $method;
         $this->protocolVersion = $protocolVersion;
@@ -32,6 +36,14 @@ class ArchiRequest implements ServerRequestInterface
         $this->headers = $headers;
         $this->requestTarget = $uri->getPath();
         $this->body = $body;
+        if (is_null($serverParams)) {
+            $serverParams = $_SERVER;
+        }
+        $this->serverParams = $serverParams;
+        if (is_null($cookieParams)) {
+            $cookieParams = $_COOKIE;
+        }
+        $this->cookieParams = $cookieParams;
     }
 
     public function getProtocolVersion()
@@ -143,7 +155,10 @@ class ArchiRequest implements ServerRequestInterface
 
     public function withMethod($method)
     {
-        throw new \RuntimeException('implement me');
+        $clone = clone $this;
+        $clone->method = $method instanceof RequestMethod ? $method : new RequestMethod($method);
+
+        return $clone;
     }
 
     public function getUri()
@@ -153,7 +168,13 @@ class ArchiRequest implements ServerRequestInterface
 
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        throw new \RuntimeException('implement me');
+        $clone = clone $this;
+        if ($uri->getHost() != $clone->getUri()->getHost() && $preserveHost) {
+            $uri = $uri->withHost($clone->getUri()->getHost());
+        }
+        $clone->uri = $uri;
+
+        return $clone;
     }
 
     /**
@@ -184,24 +205,40 @@ class ArchiRequest implements ServerRequestInterface
         return $this->attributes;
     }
 
+    /**
+     * @return array
+     */
     public function getServerParams()
     {
-        // TODO: Implement getServerParams() method.
+        return $this->serverParams;
     }
 
+    /**
+     * @return array
+     */
     public function getCookieParams()
     {
-        // TODO: Implement getCookieParams() method.
+        return $this->cookieParams;
     }
 
     public function withCookieParams(array $cookies)
     {
-        // TODO: Implement withCookieParams() method.
+        $clone = clone $this;
+        $clone->cookieParams = $cookies;
+
+        return $clone;
     }
 
     public function getQueryParams()
     {
-        // TODO: Implement getQueryParams() method.
+        $query = $this->uri->getQuery();
+        $result = [];
+        foreach (explode('&', $query) as $param) {
+            [$key, $value] = explode('=', $param);
+            $result[$key] = $value;
+        }
+
+        return $result;
     }
 
     public function withQueryParams(array $query)

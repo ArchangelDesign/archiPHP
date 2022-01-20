@@ -63,6 +63,8 @@ class ArchiRequestTest extends TestCase
     {
         $uri = new Uri('https://google.com/search?a=abc#fragment');
         $this->assertEquals('google.com', $uri->getAuthority());
+        $uri = new Uri('https://google.com#fragment');
+        $this->assertEquals('google.com', $uri->getAuthority());
         $uri = new Uri('https://google.com:8080/search?a=abc#fragment');
         $this->assertEquals('google.com:8080', $uri->getAuthority());
         $uri = new Uri('urn:example:animal:ferret:nose');
@@ -106,6 +108,8 @@ class ArchiRequestTest extends TestCase
     public function testUriQuery()
     {
         $uri = new Uri('https://google.com/search?a=abc#fragment');
+        $this->assertEquals('a=abc', $uri->getQuery());
+        $uri = new Uri('https://google.com?a=abc#fragment');
         $this->assertEquals('a=abc', $uri->getQuery());
         $uri = new Uri('https://google.com');
         $this->assertEquals('', $uri->getQuery());
@@ -168,6 +172,23 @@ class ArchiRequestTest extends TestCase
         $r = $r->withHeader('existing', 'one, two');
         $r = $r->withoutHeader('existing');
         $this->assertCount(0, $r->getHeaders());
+    }
+
+    public function testWithRequestMethod()
+    {
+        $r = RequestBuilder::createFromGlobals();
+        $w = $r->withMethod('get');
+        $this->assertIsString($w->getMethod());
+        $this->assertEquals('GET', $w->getMethod());
+    }
+
+    public function testQueryParams()
+    {
+        $uri = new Uri('https://local.com?key=value');
+        $request = new ArchiRequest(new RequestMethod('get'), new ProtocolVersion('1.1'), $uri, [], null);
+        $this->assertNotEmpty($request->getQueryParams());
+        $this->assertArrayHasKey('key', $request->getQueryParams());
+        $this->assertEquals('value', $request->getQueryParams()['key']);
     }
 
     public function testRequestBody()
