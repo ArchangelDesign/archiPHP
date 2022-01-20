@@ -2,6 +2,7 @@
 
 namespace Archi\Http;
 
+use Archi\Helper\File;
 use Psr\Http\Message\StreamInterface;
 
 class RequestStream implements StreamInterface
@@ -11,16 +12,19 @@ class RequestStream implements StreamInterface
 
     /**
      * Stream constructor.
-     * @param resource $stream
+     * @param resource|string $stream
      * @param array $meta
      */
     public function __construct($stream, array $meta = [])
     {
-        if (!is_resource($stream)) {
+        if (!is_resource($stream) && !is_string($stream)) {
             throw new \RuntimeException('Invalid stream provided');
         }
-        $this->stream = $stream;
         $this->meta = $meta;
+        if (is_string($stream)) {
+            $stream = File::openForReadingAndWriting($stream);
+        }
+        $this->stream = $stream;
     }
 
 
@@ -81,7 +85,7 @@ class RequestStream implements StreamInterface
 
     public function write($string)
     {
-        // TODO: Implement write() method.
+        File::write($this->stream, $string, strlen($string));
     }
 
     public function isReadable()

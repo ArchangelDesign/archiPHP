@@ -208,11 +208,25 @@ class File
     }
 
     /**
+     * @param string $filePath
+     * @return resource
+     */
+    public static function openForReadingAndWriting(string $filePath)
+    {
+        $handle = fopen($filePath, 'r+');
+        if (!$handle) {
+            throw new \RuntimeException('Cannot open file ' . $filePath . ' for r/w.');
+        }
+
+        return $handle;
+    }
+
+    /**
      * @param resource $handle
      * @param string $contents
      * @param int $length
      */
-    private static function write($handle, string $contents, int $length)
+    public static function write($handle, string $contents, int $length)
     {
         fwrite($handle, $contents, $length);
     }

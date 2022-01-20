@@ -5,11 +5,11 @@ namespace Archi\Http\Request;
 use Archi\Helper\Arr;
 use Archi\Http\ProtocolVersion;
 use Archi\Http\RequestStream;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-class ArchiRequest implements RequestInterface
+class ArchiRequest implements ServerRequestInterface
 {
     private ProtocolVersion $protocolVersion;
     private $headers;
@@ -17,6 +17,7 @@ class ArchiRequest implements RequestInterface
     private $requestTarget;
     private RequestMethod $method;
     private Uri $uri;
+    private array $attributes = [];
 
     public function __construct(
         RequestMethod $method,
@@ -116,7 +117,10 @@ class ArchiRequest implements RequestInterface
 
     public function withBody(StreamInterface $body)
     {
-        throw new \RuntimeException('implement me');
+        $clone = clone $this;
+        $clone->body = $body;
+
+        return $clone;
     }
 
     public function getRequestTarget()
@@ -126,7 +130,10 @@ class ArchiRequest implements RequestInterface
 
     public function withRequestTarget($requestTarget)
     {
-        throw new \RuntimeException('implement me');
+        $clone = clone $this;
+        $clone->requestTarget = $requestTarget;
+
+        return $clone;
     }
 
     public function getMethod()
@@ -156,5 +163,79 @@ class ArchiRequest implements RequestInterface
     private function headerLineToArray(string $value): array
     {
         return Arr::trim(explode(',', $value));
+    }
+
+    public function hasAttribute(string $name): bool
+    {
+        return array_key_exists($name, $this->attributes);
+    }
+
+    public function getAttribute($name, $default = null)
+    {
+        if (!$this->hasAttribute($name)) {
+            return $default;
+        }
+
+        return $this->attributes[$name];
+    }
+
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    public function getServerParams()
+    {
+        // TODO: Implement getServerParams() method.
+    }
+
+    public function getCookieParams()
+    {
+        // TODO: Implement getCookieParams() method.
+    }
+
+    public function withCookieParams(array $cookies)
+    {
+        // TODO: Implement withCookieParams() method.
+    }
+
+    public function getQueryParams()
+    {
+        // TODO: Implement getQueryParams() method.
+    }
+
+    public function withQueryParams(array $query)
+    {
+        // TODO: Implement withQueryParams() method.
+    }
+
+    public function getUploadedFiles()
+    {
+        // TODO: Implement getUploadedFiles() method.
+    }
+
+    public function withUploadedFiles(array $uploadedFiles)
+    {
+        // TODO: Implement withUploadedFiles() method.
+    }
+
+    public function getParsedBody()
+    {
+        // TODO: Implement getParsedBody() method.
+    }
+
+    public function withParsedBody($data)
+    {
+        // TODO: Implement withParsedBody() method.
+    }
+
+    public function withAttribute($name, $value)
+    {
+        // TODO: Implement withAttribute() method.
+    }
+
+    public function withoutAttribute($name)
+    {
+        // TODO: Implement withoutAttribute() method.
     }
 }

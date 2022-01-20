@@ -2,15 +2,25 @@
 
 namespace Tests;
 
+use Archi\Environment\Env;
 use Archi\Http\ProtocolVersion;
 use Archi\Http\Request\ArchiRequest;
 use Archi\Http\Request\RequestMethod;
 use Archi\Http\Request\RequestBuilder;
 use Archi\Http\Request\Uri;
+use Archi\Http\RequestStream;
 use PHPUnit\Framework\TestCase;
 
 class ArchiRequestTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        if (!Env::isInitialized()) {
+            Env::initialize(dirname(__DIR__, 2), true);
+        }
+    }
+
     public function testRequestIsCreated()
     {
         $m = new RequestMethod('POST');
@@ -158,5 +168,27 @@ class ArchiRequestTest extends TestCase
         $r = $r->withHeader('existing', 'one, two');
         $r = $r->withoutHeader('existing');
         $this->assertCount(0, $r->getHeaders());
+    }
+
+    public function testRequestBody()
+    {
+        $body = new RequestStream('php://memory');
+        $body->write(json_encode(['request' => ['status' => true]]));
+        $r = new ArchiRequest(
+            new RequestMethod('GET'),
+            new ProtocolVersion('1.1'),
+            new Uri('https://google.com'),
+            [],
+            null
+        );
+        $withBody = $r->withBody($body);
+        $bodyContents = (string)$withBody->getBody();
+        $this->assertNotEmpty($bodyContents);
+        $decodedBody = json_decode($bodyContents, true);
+        $this->assertIsArray($decodedBody);
+        $this->assertNotEmpty($decodedBody);
+        $this->assertArrayHasKey('request', $decodedBody);
+        $this->assertArrayHasKey('status', $decodedBody['request']);
+        $this->assertTrue($decodedBody['request']['status']);
     }
 }
