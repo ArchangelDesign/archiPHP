@@ -155,13 +155,24 @@ class Uri implements UriInterface
 
         $withoutScheme = str_replace('//', '', $withoutScheme);
 
-        if (strpos($withoutScheme, '/') === false) {
+        if (
+            strpos($withoutScheme, '/') === false &&
+            strpos($withoutScheme, '?') === false &&
+            strpos($withoutScheme, '#') === false
+        ) {
             return $withoutScheme;
         }
+        if (strpos($withoutScheme, '?') !== false) {
+            $withoutScheme = explode('?', $withoutScheme)[0];
+        }
+        if (strpos($withoutScheme, '#') !== false) {
+            $withoutScheme = explode('#', $withoutScheme)[0];
+        }
+        if (strpos($withoutScheme, '/') !== false) {
+            $withoutScheme = explode('/', $withoutScheme)[0];
+        }
 
-        $withoutAuthority = substr($withoutScheme, strpos($withoutScheme, '/'));
-
-        return str_replace($withoutAuthority, '', $withoutScheme);
+        return $withoutScheme;
     }
 
     /**
