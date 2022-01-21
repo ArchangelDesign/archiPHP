@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Archi\Environment\Env;
+use Archi\Helper\File;
 use Archi\Http\ProtocolVersion;
 use Archi\Http\Request\ArchiRequest;
 use Archi\Http\Request\RequestMethod;
@@ -21,10 +22,24 @@ class ArchiRequestTest extends TestCase
         }
     }
 
+    /**
+     * @return ArchiRequest
+     */
+    private function getArchiRequestForGoogleWithNoParams(): ArchiRequest
+    {
+        return new ArchiRequest(
+            new RequestMethod('GET'),
+            new ProtocolVersion('1.1'),
+            new Uri('https://google.com'),
+            [],
+            null
+        );
+    }
+
     public function testRequestIsCreated()
     {
         $m = new RequestMethod('POST');
-        $r = new ArchiRequest($m, new ProtocolVersion('1.1'), new Uri('http://google.com'), [], null);
+        $r = new ArchiRequest($m, new ProtocolVersion('1.1'), new Uri('https://google.com'), [], null);
         $this->assertInstanceOf(ArchiRequest::class, $r);
     }
 
@@ -37,13 +52,7 @@ class ArchiRequestTest extends TestCase
 
     public function testProtocolVersion()
     {
-        $request = new ArchiRequest(
-            new RequestMethod('GET'),
-            new ProtocolVersion('HTTP/1.1'),
-            new Uri('http://google.com'),
-            [],
-            null
-        );
+        $request = $this->getArchiRequestForGoogleWithNoParams();
         $this->assertEquals('1.1', $request->getProtocolVersion());
         $plainNumber = $request->withProtocolVersion('1.1');
         $this->assertEquals('1.1', $plainNumber->getProtocolVersion());
@@ -195,13 +204,7 @@ class ArchiRequestTest extends TestCase
     {
         $body = new RequestStream('php://memory');
         $body->write(json_encode(['request' => ['status' => true]]));
-        $r = new ArchiRequest(
-            new RequestMethod('GET'),
-            new ProtocolVersion('1.1'),
-            new Uri('https://google.com'),
-            [],
-            null
-        );
+        $r = $this->getArchiRequestForGoogleWithNoParams();
         $withBody = $r->withBody($body);
         $bodyContents = (string)$withBody->getBody();
         $this->assertNotEmpty($bodyContents);
@@ -211,5 +214,24 @@ class ArchiRequestTest extends TestCase
         $this->assertArrayHasKey('request', $decodedBody);
         $this->assertArrayHasKey('status', $decodedBody['request']);
         $this->assertTrue($decodedBody['request']['status']);
+    }
+
+    public function testWithQueryParams()
+    {
+        $r = $this->getArchiRequestForGoogleWithNoParams();
+        $this->assertEmpty($r->getQueryParams());
+        $withParams = $r->withQueryParams(['test' => 'value']);
+        $this->assertNotEmpty($withParams->getQueryParams());
+        $this->assertArrayHasKey('test', $withParams->getQueryParams());
+        $this->assertEquals('value', $withParams->getQueryParams()['test']);
+    }
+
+    public function testWithParsedBody()
+    {
+        $request = RequestBuilder::createFromGlobals();
+        $body = new RequestStream(File::openForReadingAndWriting('php://memory'));
+        $body->write('');
+        $request = $request->withBody($body);
+        $this->assertEmpty($request->getParsedBody());
     }
 }

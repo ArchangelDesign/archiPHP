@@ -7,6 +7,7 @@ use Archi\Http\ProtocolVersion;
 use Archi\Http\RequestStream;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 
 class ArchiRequest implements ServerRequestInterface
@@ -20,6 +21,10 @@ class ArchiRequest implements ServerRequestInterface
     private array $attributes = [];
     private array $serverParams;
     private array $cookieParams;
+    private array $queryParams;
+    /** @var UploadedFileInterface[] */
+    private ?array $uploadedFiles;
+    private $parsedBody;
 
     public function __construct(
         RequestMethod $method,
@@ -28,7 +33,8 @@ class ArchiRequest implements ServerRequestInterface
         array $headers,
         ?RequestStream $body,
         ?array $serverParams = null,
-        ?array $cookieParams = null
+        ?array $cookieParams = null,
+        ?array $uploadedFiles = null
     ) {
         $this->method = $method;
         $this->protocolVersion = $protocolVersion;
@@ -44,6 +50,9 @@ class ArchiRequest implements ServerRequestInterface
             $cookieParams = $_COOKIE;
         }
         $this->cookieParams = $cookieParams;
+        $this->queryParams = $this->extractQueryParams($uri->getQuery());
+        $this->uploadedFiles = $uploadedFiles;
+        $this->parsedBody = $this->extractParsedBody();
     }
 
     public function getProtocolVersion()
@@ -51,6 +60,10 @@ class ArchiRequest implements ServerRequestInterface
         return $this->protocolVersion->get();
     }
 
+    /**
+     * @param string|ProtocolVersion $version
+     * @return ArchiRequest
+     */
     public function withProtocolVersion($version)
     {
         $protocolVersion = $version instanceof ProtocolVersion ? $version : new ProtocolVersion($version);
@@ -231,7 +244,14 @@ class ArchiRequest implements ServerRequestInterface
 
     public function getQueryParams()
     {
-        $query = $this->uri->getQuery();
+        return $this->queryParams;
+    }
+
+    private function extractQueryParams(string $query): array
+    {
+        if (empty($query)) {
+            return [];
+        }
         $result = [];
         foreach (explode('&', $query) as $param) {
             [$key, $value] = explode('=', $param);
@@ -243,27 +263,36 @@ class ArchiRequest implements ServerRequestInterface
 
     public function withQueryParams(array $query)
     {
-        // TODO: Implement withQueryParams() method.
+        $clone = clone $this;
+        $clone->queryParams = $query;
+
+        return $clone;
     }
 
     public function getUploadedFiles()
     {
-        // TODO: Implement getUploadedFiles() method.
+        return $this->uploadedFiles;
     }
 
     public function withUploadedFiles(array $uploadedFiles)
     {
-        // TODO: Implement withUploadedFiles() method.
+        $clone = clone $this;
+        $clone->uploadedFiles = $uploadedFiles;
+
+        return $clone;
     }
 
     public function getParsedBody()
     {
-        // TODO: Implement getParsedBody() method.
+        return $this->parsedBody;
     }
 
     public function withParsedBody($data)
     {
-        // TODO: Implement withParsedBody() method.
+        $clone = clone $this;
+        $clone->parsedBody = $data;
+
+        return $clone;
     }
 
     public function withAttribute($name, $value)
@@ -274,5 +303,14 @@ class ArchiRequest implements ServerRequestInterface
     public function withoutAttribute($name)
     {
         // TODO: Implement withoutAttribute() method.
+    }
+
+    private function extractParsedBody()
+    {
+        if (!$this->method->shouldHaveBody()) {
+            return [];
+        }
+
+        return $_POST;
     }
 }

@@ -461,4 +461,24 @@ class RequestMethod
     {
         return $this->method;
     }
+
+    public function shouldHaveBody(): bool
+    {
+        return $this->isPost() || $this->isPut() || $this->isPatch();
+    }
+
+    private function isPost(): bool
+    {
+        return $this->method == 'POST';
+    }
+
+    private function isPut(): bool
+    {
+        return $this->method == 'PUT';
+    }
+
+    private function isPatch(): bool
+    {
+        return $this->method == 'PATCH';
+    }
 }
