@@ -56,10 +56,18 @@ class ModuleManager
         if (!Directory::exists($path)) {
             throw new \RuntimeException('Cannot load modules. Directory ' . $path . ' is not valid.');
         }
-        $modules = Directory::getDirectoryList($path);
+        $moduleDirectories = Directory::getDirectoryList($path);
 
-        foreach ($modules as $moduleName) {
-            $this->preloadModule($moduleName);
+        foreach ($moduleDirectories as $moduleName) {
+            $moduleDescriptor = $this->getModuleDescriptorFromDirectoryName($moduleName);
+            if (is_null($moduleDescriptor)) {
+                continue;
+            }
+            try {
+                $this->preloadModule($moduleDescriptor);
+            } catch (Exception\InvalidLocalModule $e) {
+                ArchiContainer::getCoreLogger()->error('Cannot preload module ' . $moduleDescriptor->getName());
+            }
         }
 
         self::$modulesPreLoaded = true;
@@ -74,34 +82,23 @@ class ModuleManager
         return Env::cwd() . DIRECTORY_SEPARATOR . $this->getModuleDirectoryName();
     }
 
-    private function preloadModule(string $directoryName): ?ModuleDescriptor
+    /**
+     * @param ModuleDescriptor $module
+     * @return void
+     * @throws Exception\InvalidLocalModule
+     * @throws InvalidModule
+     * @throws ModuleNotFound
+     */
+    private function preloadModule(ModuleDescriptor $module)
     {
-        $directory = $this->getModuleDirectoryPath() . DIRECTORY_SEPARATOR . $directoryName;
-
-        if (!Directory::exists($directory)) {
-            return null;
-        }
-
-        if (!file_exists($this->getModuleJsonFilePath($directory))) {
-            return null;
-        }
-
-        $moduleJson = json_decode(file_get_contents($this->getModuleJsonFilePath($directory)));
-        $module = $this->getModuleDescriptorFromJson($directory, $moduleJson);
         $module->preLoad();
-        try {
-            $this->loadModule($module);
-        } catch (InvalidModule $e) {
-            return null;
-        }
+        $this->loadModule($module);
         $this->descriptors[$module->getNameInPascalCase()] = $module;
         $cm = $this->getModuleInstance($module->getPascalName())->getClassMap()->toArray();
         $this->classMap = array_merge(
             $this->classMap,
             $cm
         );
-
-        return $module;
     }
 
     private function getModuleJsonFilePath(string $directory): string
@@ -218,5 +215,21 @@ class ModuleManager
     public function getClassMap(): array
     {
         return $this->classMap;
+    }
+
+    private function getModuleDescriptorFromDirectoryName(string $moduleName): ?ModuleDescriptor
+    {
+        $directory = $this->getModuleDirectoryPath() . DIRECTORY_SEPARATOR . $moduleName;
+
+        if (!Directory::exists($directory)) {
+            return null;
+        }
+
+        if (!file_exists($this->getModuleJsonFilePath($directory))) {
+            return null;
+        }
+
+        $moduleJson = json_decode(file_get_contents($this->getModuleJsonFilePath($directory)));
+        return $this->getModuleDescriptorFromJson($directory, $moduleJson);
     }
 }

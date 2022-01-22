@@ -9,6 +9,7 @@ use Archi\Dispatcher\Provider\RequestProvider;
 use Archi\Environment\Env;
 use Archi\Http\Request\ArchiRequest;
 use Archi\Log\CoreLoggerProvider;
+use Archi\Log\Logger;
 use Archi\Module\ModuleManager;
 use Archi\Module\ModuleManagerProvider;
 use Archi\View\ViewManager;
@@ -41,6 +42,11 @@ class ArchiContainer implements ContainerInterface
         $this->registerFactory(new CoreLoggerProvider());
         $this->registerFactory(new RequestProvider());
         spl_autoload_register([$this, 'autoload']);
+    }
+
+    public static function getCoreLogger(): Logger
+    {
+        return self::getInstance()->get('CoreLogger');
     }
 
     public function injectInstance(string $key, $instance)
