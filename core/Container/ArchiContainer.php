@@ -33,14 +33,7 @@ class ArchiContainer implements ContainerInterface
 
     private function __construct()
     {
-        $this->register(new Binding('Config', 'Archi\Config\ConfigProvider', true));
-        $this->register(new Binding('Dispatcher', 'Archi\Dispatcher\ArchiDispatcher', true));
-        $this->register(new Binding('Cache', 'Archi\Cache\ArchiCache', true));
-        $this->register(new Binding('ViewManager', 'Archi\View\ViewManager', true));
-
-        $this->registerfactory(new ModuleManagerProvider());
-        $this->registerFactory(new CoreLoggerProvider());
-        $this->registerFactory(new RequestProvider());
+        $this->registerCoreBindings();
         spl_autoload_register([$this, 'autoload']);
     }
 
@@ -385,5 +378,23 @@ class ArchiContainer implements ContainerInterface
     private function isSingleton(string $id): bool
     {
         return $this->singletons[$id] ?? false;
+    }
+
+    /**
+     * Expected to run at bootstrap, before consumer code is executed.
+     * Wires all fixed dependencies available in Container.
+     *
+     * @return void
+     */
+    private function registerCoreBindings(): void
+    {
+        $this->register(new Binding('Config', 'Archi\Config\ConfigProvider', true));
+        $this->register(new Binding('Dispatcher', 'Archi\Dispatcher\ArchiDispatcher', true));
+        $this->register(new Binding('Cache', 'Archi\Cache\ArchiCache', true));
+        $this->register(new Binding('ViewManager', 'Archi\View\ViewManager', true));
+
+        $this->registerFactory(new ModuleManagerProvider());
+        $this->registerFactory(new CoreLoggerProvider());
+        $this->registerFactory(new RequestProvider());
     }
 }
