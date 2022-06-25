@@ -19,7 +19,7 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class ArchiContainer implements ContainerInterface
 {
-    private static ?ArchiContainer $instance;
+    private static ?ArchiContainer $instance = null;
 
     private array $instances = [];
 
