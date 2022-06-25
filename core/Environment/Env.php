@@ -7,6 +7,7 @@ use Archi\Helper\Directory;
 class Env
 {
     public const DS = '/';
+    public const ENV_MODULE_DIR = 'ARCHI_MODULE_DIR';
     private static bool $initialized = false;
 
     private static ?string $workingDirectory;

@@ -11,7 +11,9 @@ use Archi\Module\Exception\ModuleNotFound;
 
 class ModuleManager
 {
-    private $autloadModules = false;
+    public const DEFAULT_MODULE_DIR = 'modules';
+    public const MODULE_DESCRIPTOR_FILE_NAME = 'module.json';
+    private bool $autloadModules = false;
 
     private static ?ModuleManager $instance = null;
 
@@ -33,6 +35,9 @@ class ModuleManager
         }
     }
 
+    /**
+     * @return ModuleManager
+     */
     public static function getInstance(): ModuleManager
     {
         if (is_null(self::$instance)) {
@@ -42,11 +47,26 @@ class ModuleManager
         return self::$instance;
     }
 
-    public function getModuleDirectoryName()
+    /**
+     * Returns the name of the directory in which modules reside.
+     *
+     * @return string
+     */
+    public function getModuleDirectoryName(): string
     {
-        return Env::get('ARCHI_MODULE_DIR', 'modules');
+        return Env::get(Env::ENV_MODULE_DIR, self::DEFAULT_MODULE_DIR);
     }
 
+    /**
+     * Expected to run at bootstrap. Required for the rest of the framework.
+     *
+     * @return void
+     * @throws InvalidModule
+     * @throws ModuleNotFound
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
+     */
     public function bootstrap()
     {
         if (self::$modulesPreLoaded) {
@@ -88,6 +108,9 @@ class ModuleManager
      * @throws Exception\InvalidLocalModule
      * @throws InvalidModule
      * @throws ModuleNotFound
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
      */
     private function preloadModule(ModuleDescriptor $module)
     {
@@ -101,9 +124,13 @@ class ModuleManager
         );
     }
 
+    /**
+     * @param string $directory
+     * @return string
+     */
     private function getModuleJsonFilePath(string $directory): string
     {
-        return $directory . '/module.json';
+        return $directory . Env::DS . self::MODULE_DESCRIPTOR_FILE_NAME;
     }
 
     private function isAutoloadEnabled(): bool
@@ -111,6 +138,11 @@ class ModuleManager
         return $this->autloadModules;
     }
 
+    /**
+     * @param string $directory
+     * @param \stdClass $moduleJson
+     * @return ModuleDescriptor
+     */
     private function getModuleDescriptorFromJson(string $directory, \stdClass $moduleJson): ModuleDescriptor
     {
         if (!property_exists($moduleJson, 'description')) {
@@ -135,6 +167,14 @@ class ModuleManager
         );
     }
 
+    /**
+     * @param ModuleDescriptor $module
+     * @return void
+     * @throws InvalidModule
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
+     */
     private function loadModule(ModuleDescriptor $module)
     {
         require_once $module->getLoadFile();
@@ -149,16 +189,27 @@ class ModuleManager
         $this->pushModuleInstance($module, $instance);
     }
 
+    /**
+     * @return ModuleDescriptor[]
+     */
     public function getDescriptors(): array
     {
         return $this->descriptors;
     }
 
+    /**
+     * @param string $moduleName
+     * @return bool
+     */
     public function isLoaded(string $moduleName): bool
     {
         return isset($this->modules[$this->normalizeName($moduleName)]);
     }
 
+    /**
+     * @param string $moduleName
+     * @return bool
+     */
     public function hasModule(string $moduleName): bool
     {
         return isset($this->descriptors[$this->normalizeName($moduleName)]);
@@ -173,6 +224,9 @@ class ModuleManager
      * @return ModuleInterface
      * @throws InvalidModule
      * @throws ModuleNotFound
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
      */
     public function getModuleInstance(string $moduleName): ModuleInterface
     {
@@ -187,21 +241,37 @@ class ModuleManager
         return $this->modules[$this->normalizeName($moduleName)];
     }
 
+    /**
+     * @param ModuleDescriptor $module
+     * @param ModuleInterface $instance
+     * @return void
+     */
     private function pushModuleInstance(ModuleDescriptor $module, ModuleInterface $instance)
     {
         $this->modules[$module->getPascalName()] = $instance;
     }
 
-    private function normalizeName(string $moduleName)
+    /**
+     * @param string $moduleName
+     * @return string
+     */
+    private function normalizeName(string $moduleName): string
     {
         return Nomenclature::toPascalCase($moduleName);
     }
 
-    public function getModuleDescriptor(string $moduleName)
+    /**
+     * @param string $moduleName
+     * @return ModuleDescriptor
+     */
+    public function getModuleDescriptor(string $moduleName): ModuleDescriptor
     {
         return $this->descriptors[$this->normalizeName($moduleName)];
     }
 
+    /**
+     * @return void
+     */
     private function bootstrapModules()
     {
         foreach ($this->modules as $moduleName => $moduleInstance) {
@@ -217,6 +287,10 @@ class ModuleManager
         return $this->classMap;
     }
 
+    /**
+     * @param string $moduleName
+     * @return ModuleDescriptor|null
+     */
     private function getModuleDescriptorFromDirectoryName(string $moduleName): ?ModuleDescriptor
     {
         $directory = $this->getModuleDirectoryPath() . DIRECTORY_SEPARATOR . $moduleName;
