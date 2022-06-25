@@ -3,6 +3,7 @@
 namespace Archi\Module;
 
 use Archi\Environment\Env;
+use Archi\Helper\ArchiString;
 use Archi\Helper\File;
 use Archi\Helper\Nomenclature;
 use Archi\Module\Exception\InvalidLocalModule;
@@ -179,8 +180,8 @@ class ModuleDescriptor
         return $matches[1];
     }
 
-    public function getPascalName()
+    public function getPascalName(): ArchiString
     {
-        return Nomenclature::toPascalCase($this->getName());
+        return new ArchiString(Nomenclature::toPascalCase($this->getName()));
     }
 }

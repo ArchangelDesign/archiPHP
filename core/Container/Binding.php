@@ -4,18 +4,18 @@ namespace Archi\Container;
 
 class Binding
 {
-    private $isSingleton;
+    private bool $isSingleton;
 
-    private $id;
+    private string $id;
 
-    private $classPath;
+    private string $classPath;
 
     /**
      * Binding constructor.
      *
-     * @param $isSingleton
-     * @param $id
-     * @param $classPath
+     * @param string $id
+     * @param string $classPath
+     * @param bool $isSingleton
      */
     public function __construct(string $id, string $classPath, bool $isSingleton)
     {

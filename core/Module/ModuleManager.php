@@ -117,7 +117,7 @@ class ModuleManager
         $module->preLoad();
         $this->loadModule($module);
         $this->descriptors[$module->getNameInPascalCase()] = $module;
-        $cm = $this->getModuleInstance($module->getPascalName())->getClassMap()->toArray();
+        $cm = $this->getModuleInstance($module->getPascalName()->str())->getClassMap()->toArray();
         $this->classMap = array_merge(
             $this->classMap,
             $cm
@@ -248,7 +248,7 @@ class ModuleManager
      */
     private function pushModuleInstance(ModuleDescriptor $module, ModuleInterface $instance)
     {
-        $this->modules[$module->getPascalName()] = $instance;
+        $this->modules[$module->getPascalName()->str()] = $instance;
     }
 
     /**

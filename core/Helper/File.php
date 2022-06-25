@@ -179,7 +179,7 @@ class File
 
     public static function buildPath(string $directory, string $fileName)
     {
-        if (!ArchiString::endsWith($directory, Env::ds())) {
+        if (!ArchiString::staticEndsWith($directory, Env::ds())) {
             $directory .= Env::ds();
         }
 
