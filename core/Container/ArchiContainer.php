@@ -19,17 +19,17 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class ArchiContainer implements ContainerInterface
 {
-    private static $instance;
+    private static ?ArchiContainer $instance;
 
-    private $instances = [];
+    private array $instances = [];
 
     /**
      * @var Binding[]
      */
-    private $bindings = [];
+    private array $bindings = [];
 
-    private $factories = [];
-    private $singletons = [];
+    private array $factories = [];
+    private array $singletons = [];
 
     private function __construct()
     {
@@ -40,6 +40,11 @@ class ArchiContainer implements ContainerInterface
     public static function getCoreLogger(): Logger
     {
         return self::getInstance()->get('CoreLogger');
+    }
+
+    public static function logger(): Logger
+    {
+        return self::getCoreLogger();
     }
 
     public function injectInstance(string $key, $instance)
