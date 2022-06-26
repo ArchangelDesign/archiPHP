@@ -86,7 +86,7 @@ class ModuleManager
             try {
                 $this->preloadModule($moduleDescriptor);
             } catch (Exception\InvalidLocalModule $e) {
-                ArchiContainer::getCoreLogger()->error('Cannot preload module ' . $moduleDescriptor->getName());
+                ArchiContainer::logger()->error('Cannot preload module ' . $moduleDescriptor->getName());
             }
         }
 
