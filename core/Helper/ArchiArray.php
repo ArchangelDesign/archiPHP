@@ -2,8 +2,19 @@
 
 namespace Archi\Helper;
 
-class Arr
+class ArchiArray
 {
+
+    private array $subject;
+
+    /**
+     * @param array $subject
+     */
+    public function __construct(array $subject)
+    {
+        $this->subject = $subject;
+    }
+
     /**
      * Expects an array of strings and returns the same array
      * with trimmed strings. Keys are not preserved.
@@ -52,5 +63,35 @@ class Arr
         }
 
         return $result;
+    }
+
+    public static function staticFetch(array $subject, string $path, $default = null)
+    {
+        if (strpos($path, '.') === false) {
+            return $subject[$path] ?? $default;
+        }
+        $parts = explode('.', $path);
+        $buffer = $subject;
+        foreach ($parts as $part) {
+            $buffer = $buffer[$part] ?? null;
+            if (is_null($buffer)) {
+                return $default;
+            }
+        }
+
+        return $buffer;
+    }
+
+    /**
+     * Returns the value of the array using dot notation.
+     * If the value is not found, the default is returned.
+     *
+     * @param string $path
+     * @param $default
+     * @return array|mixed|null
+     */
+    public function fetch(string $path, $default = null)
+    {
+        return self::staticFetch($this->subject, $path, $default);
     }
 }

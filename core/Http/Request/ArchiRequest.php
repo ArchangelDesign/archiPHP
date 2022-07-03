@@ -2,7 +2,7 @@
 
 namespace Archi\Http\Request;
 
-use Archi\Helper\Arr;
+use Archi\Helper\ArchiArray;
 use Archi\Http\ProtocolVersion;
 use Archi\Http\RequestStream;
 use Psr\Http\Message\ServerRequestInterface;
@@ -196,7 +196,7 @@ class ArchiRequest implements ServerRequestInterface
      */
     private function headerLineToArray(string $value): array
     {
-        return Arr::trim(explode(',', $value));
+        return ArchiArray::trim(explode(',', $value));
     }
 
     public function hasAttribute(string $name): bool
