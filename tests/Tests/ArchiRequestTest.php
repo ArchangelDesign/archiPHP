@@ -248,4 +248,19 @@ class ArchiRequestTest extends TestCase
         $withoutAttr = $request->withoutAttribute('new-attr');
         $this->assertEquals('default', $withoutAttr->getAttribute('new-attr', 'default'));
     }
+
+    public function testExtractDecodedJsonBody()
+    {
+        $body = new RequestStream(File::openForReadingAndWriting('php://memory'));
+        $body->write('{"key":"value"}');
+        $request = new ArchiRequest(
+            new RequestMethod('GET'),
+            new ProtocolVersion('1.1'),
+            new Uri('https://'),
+            ['Content-Type' => 'application/json'],
+            $body
+        );
+        $this->assertArrayHasKey('key', $request->getParsedBody());
+        $this->assertEquals('value', $request->getParsedBody()['key']);
+    }
 }

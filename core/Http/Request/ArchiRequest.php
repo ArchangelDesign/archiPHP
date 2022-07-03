@@ -84,7 +84,7 @@ class ArchiRequest implements ServerRequestInterface
     }
 
     /**
-     * @param  string $name
+     * @param string $name
      * @return string[]
      */
     public function getHeader($name)
@@ -313,12 +313,52 @@ class ArchiRequest implements ServerRequestInterface
         return $clone;
     }
 
-    private function extractParsedBody()
+    /**
+     * Returns content type or empty string if not set.
+     *
+     * @return string
+     */
+    public function getContentType(): string
     {
-        if (!$this->method->shouldHaveBody()) {
-            return [];
+        $headers = $this->getHeader('Content-Type');
+        if (empty($headers)) {
+            return '';
         }
+        if (is_string($headers)) {
+            return $headers;
+        }
+        return array_shift($headers);
+    }
 
-        return $_POST;
+    /**
+     * @return array|string
+     */
+    private function extractParsedBody()
+    {$ct = $this->getContentType();
+        switch ($this->getContentType()) {
+            case 'application/x-www-form-urlencoded':
+            case 'multipart/form-data':
+                if ($this->method->shouldHaveBody()) {
+                    return $_POST;
+                }
+                return [];
+            case 'application/json':
+                $this->body->rewind();
+                return json_decode($this->body->getContents(), true);
+            case 'application/pdf':
+            case 'text/html':
+            case 'text/plain':
+            case 'text/css':
+            case 'text/csv':
+            case 'text/tab-separated-values': // @TODO: decode
+            case 'application/xml': // @TODO: decode
+            case 'image/jpeg':
+            case 'image/png':
+            case 'image/gif':
+                $this->body->rewind();
+                return $this->body->getContents();
+            default:
+                return [];
+        }
     }
 }
