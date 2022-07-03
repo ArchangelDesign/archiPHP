@@ -334,7 +334,7 @@ class ArchiRequest implements ServerRequestInterface
      * @return array|string
      */
     private function extractParsedBody()
-    {$ct = $this->getContentType();
+    {
         switch ($this->getContentType()) {
             case 'application/x-www-form-urlencoded':
             case 'multipart/form-data':
