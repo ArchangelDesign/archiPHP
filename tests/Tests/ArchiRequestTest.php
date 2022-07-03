@@ -234,4 +234,18 @@ class ArchiRequestTest extends TestCase
         $request = $request->withBody($body);
         $this->assertEmpty($request->getParsedBody());
     }
+
+    public function testWithAttribute()
+    {
+        $request = RequestBuilder::createFromGlobals();
+        $withAttrs = $request->withAttribute('new-attr', 'theValue');
+        $this->assertEquals('theValue', $withAttrs->getAttribute('new-attr'));
+    }
+
+    public function testWithoutAttribute()
+    {
+        $request = RequestBuilder::createFromGlobals()->withAttribute('new-attr', 'theValue');
+        $withoutAttr = $request->withoutAttribute('new-attr');
+        $this->assertEquals('default', $withoutAttr->getAttribute('new-attr', 'default'));
+    }
 }

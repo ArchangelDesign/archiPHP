@@ -297,12 +297,20 @@ class ArchiRequest implements ServerRequestInterface
 
     public function withAttribute($name, $value)
     {
-        // TODO: Implement withAttribute() method.
+        $clone = clone $this;
+        $clone->attributes[$name] = $value;
+
+        return $clone;
     }
 
     public function withoutAttribute($name)
     {
-        // TODO: Implement withoutAttribute() method.
+        $clone = clone $this;
+        if ($clone->hasAttribute($name)) {
+            unset($clone->attributes[$name]);
+        }
+
+        return $clone;
     }
 
     private function extractParsedBody()
