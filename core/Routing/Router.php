@@ -6,6 +6,7 @@ use Archi\Http\Request\ArchiRequest;
 
 class Router
 {
+    protected array $routes;
     /**
      * @param ArchiRequest $request
      * @return array
